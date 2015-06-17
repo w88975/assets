@@ -1,0 +1,35 @@
+{
+  "name": "assets",
+  "version": "0.0.1",
+  "description": "assets browser for asset-db",
+  "author": "Firebox Technology",
+  "hosts": {
+    "editor-framework": "^0.3.5"
+  },
+  "main": "main.js",
+  "menus": {
+    "Panel/Assets": {
+      "icon": "panel/icon.png",
+      "message": "assets:open"
+    }
+  },
+  "panels": {
+    "panel": {
+      "frame": "panel/assets.html",
+      "type": "dockable",
+      "title": "Assets",
+      "icon": "panel/icon.png",
+      "width": 200,
+      "messages": [
+      ],
+      "profiles": {
+        "local": {
+          "collapses-status": []
+        }
+      }
+    }
+  },
+  "tests": [
+    "test/basic.html"
+  ]
+}
