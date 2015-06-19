@@ -20,6 +20,9 @@
       "title": "Assets",
       "icon": "panel/icon.png",
       "width": 200,
+      "shortcuts": {
+        "command+f": "focusOnSearch"
+      },
       "messages": [
       ],
       "profiles": {

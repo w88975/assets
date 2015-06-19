@@ -9,6 +9,10 @@ Editor.registerPanel( 'assets.panel', {
 
     ready: function () {
     },
+
+    focusOnSearch: function () {
+        this.$.search.setFocus();
+    },
 });
 
 })();
