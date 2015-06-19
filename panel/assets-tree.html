@@ -1,0 +1,16 @@
+<link rel="import" href="packages://ui-tree/widget/tree-item.html">
+
+<dom-module id="assets-tree">
+    <link rel="import" type="css" href="assets-tree.css">
+
+    <template>
+        <content></content>
+        <div id="highlightBorder" class="highlight"></div>
+        <div id="insertLine" class="insert"></div>
+        <editor-input id="nameInput" style="display:none"></editor-input>
+        <editor-loader id="loader" text="Loading" mask hidden></editor-loader>
+    </template>
+</dom-module>
+
+<script type="text/javascript" src="packages://ui-tree/widget/id-tree.js"></script>
+<script type="text/javascript" src="assets-tree.js"></script>
