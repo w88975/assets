@@ -26,6 +26,8 @@ Polymer({
         Editor.assetdb.deepQuery(function ( results ) {
             this._build(results);
             this.$.loader.hidden = true;
+            console.log('assets-tree-ready');
+            this.fire('assets-tree-ready');
         }.bind(this));
     },
 

@@ -7,7 +7,19 @@ Editor.registerPanel( 'assets.panel', {
     properties: {
     },
 
+    listeners: {
+        'assets-tree-ready': '_onAssetsTreeReady'
+    },
+
     ready: function () {
+        window.addEventListener( 'beforeunload', function ( event ) {
+            var states = this.$.tree.dumpItemStates();
+            this.profiles.local['item-states'] = states;
+            this.profiles.local.save();
+
+            // NOTE: this will prevent window reload
+            // event.returnValue = false;
+        }.bind(this) );
     },
 
     focusOnSearch: function ( event ) {
@@ -94,6 +106,11 @@ Editor.registerPanel( 'assets.panel', {
             return;
 
         this.$.tree.deactiveItemById(id);
+    },
+
+    _onAssetsTreeReady: function () {
+        var localProfile = this.profiles.local;
+        this.$.tree.restoreItemStates(localProfile['item-states']);
     },
 });
 
