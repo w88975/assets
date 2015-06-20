@@ -14,3 +14,11 @@
     min-width: 100px;
     min-height: 100px;
 }
+
+:host ::content assets-item > #content > assets-item {
+    margin-left: 12px;
+}
+
+:host[focused] ::content assets-item[selected] > #bar {
+    background-color: #059;
+}

@@ -21,9 +21,21 @@
       "icon": "panel/icon.png",
       "width": 200,
       "shortcuts": {
-        "command+f": "focusOnSearch"
+        "command+f": "focusOnSearch",
+        "#tree": {
+          "up": "selectPrev",
+          "down": "selectNext",
+          "shift+up": "shiftSelectPrev",
+          "shift+down": "shiftSelectNext",
+          "left": "foldCurrent",
+          "right": "foldupCurrent"
+        }
       },
       "messages": [
+        "selection:selected",
+        "selection:unselected",
+        "selection:activated",
+        "selection:deactivated"
       ],
       "profiles": {
         "local": {

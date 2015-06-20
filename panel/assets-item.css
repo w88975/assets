@@ -1,0 +1,11 @@
+:host[conflicted] #bar {
+    background-color: #900;
+}
+
+:host[highlighted] #header {
+    background-color: #c7722c;
+}
+
+:host[invalid] #header {
+    background-color: #f00;
+}
