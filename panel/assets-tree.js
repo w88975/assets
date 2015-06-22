@@ -100,6 +100,7 @@ Polymer({
     _newEntryRecursively: function ( entry ) {
         var ctor = Editor.widgets['assets-item'];
         var el = new ctor();
+        el.setIcon( entry.type );
 
         if ( entry.children ) {
             entry.children.forEach( function ( childEntry ) {

@@ -16,7 +16,7 @@
 }
 
 :host ::content assets-item > #content > assets-item {
-    margin-left: 12px;
+    margin-left: 18px;
 }
 
 :host[focused] ::content assets-item[selected] > #bar {
