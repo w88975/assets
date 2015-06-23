@@ -1,3 +1,5 @@
+(function () {
+
 function _binaryIndexOf ( elements, key ) {
     var lo = 0;
     var hi = elements.length - 1;
@@ -231,3 +233,5 @@ Editor.registerWidget( 'assets-item', {
         event.stopPropagation();
     },
 });
+
+})();

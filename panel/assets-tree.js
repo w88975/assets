@@ -1,3 +1,5 @@
+(function () {
+
 Polymer({
     is: 'assets-tree',
 
@@ -181,3 +183,5 @@ Polymer({
         this.clearSelection();
     },
 });
+
+})();
