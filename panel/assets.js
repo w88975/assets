@@ -23,42 +23,57 @@ Editor.registerPanel( 'assets.panel', {
     },
 
     focusOnSearch: function ( event ) {
-        event.stopPropagation();
+        if ( event ) {
+            event.stopPropagation();
+        }
 
         this.$.search.setFocus();
     },
 
     selectPrev: function ( event ) {
-        event.stopPropagation();
-        event.preventDefault();
+        if ( event ) {
+            event.stopPropagation();
+            event.preventDefault();
+        }
 
         this.$.tree.selectPrev(true);
     },
 
     selectNext: function ( event ) {
-        event.stopPropagation();
-        event.preventDefault();
+        if ( event ) {
+            event.stopPropagation();
+            event.preventDefault();
+        }
 
         this.$.tree.selectNext(true);
     },
 
     // TODO: make it better
     shiftSelectPrev: function ( event ) {
-        event.stopPropagation();
-        event.preventDefault();
+        if ( event ) {
+            event.stopPropagation();
+            event.preventDefault();
+        }
 
         this.$.tree.selectPrev(false);
     },
 
     // TODO: make it better
     shiftSelectNext: function ( event ) {
-        event.stopPropagation();
-        event.preventDefault();
+        if ( event ) {
+            event.stopPropagation();
+            event.preventDefault();
+        }
 
         this.$.tree.selectNext(false);
     },
 
-    foldCurrent: function () {
+    foldCurrent: function ( event ) {
+        if ( event ) {
+            event.stopPropagation();
+            event.preventDefault();
+        }
+
         var activeEL = this.$.tree._activeElement;
         if ( activeEL ) {
             if ( activeEL.foldable && !activeEL.folded ) {
@@ -67,7 +82,12 @@ Editor.registerPanel( 'assets.panel', {
         }
     },
 
-    foldupCurrent: function () {
+    foldupCurrent: function ( event ) {
+        if ( event ) {
+            event.stopPropagation();
+            event.preventDefault();
+        }
+
         var activeEL = this.$.tree._activeElement;
         if ( activeEL ) {
             if ( activeEL.foldable && activeEL.folded ) {
