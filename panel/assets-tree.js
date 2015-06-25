@@ -13,6 +13,7 @@ Polymer({
         'mousedown': '_onMouseDown',
         'scroll': '_onScroll',
         'dragstart': '_onDragStart',
+        'dragend': '_onDragEnd',
     },
 
     properties: {
@@ -202,6 +203,11 @@ Polymer({
                 icon: itemEL.$.icon,
             };
         }.bind(this)));
+    },
+
+    _onDragEnd: function ( event ) {
+        EditorUI.DragDrop.end();
+        Editor.Selection.cancel();
     },
 });
 
