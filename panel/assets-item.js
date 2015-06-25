@@ -121,8 +121,7 @@ Editor.registerWidget( 'assets-item', {
         }
 
         if ( type === 'texture' ) {
-            // TODO: set to thumbnail
-            this.$.icon.src = '';
+            this.$.icon.src = 'uuid://' + this._userId + '?thumbnail';
             return;
         }
 

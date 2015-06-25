@@ -86,6 +86,7 @@ Polymer({
         data.forEach( function ( entry ) {
             var newEL = this._newEntryRecursively(entry);
             this.addItem( this, newEL, entry.name, entry.id );
+            newEL.setIcon( entry.type );
 
             newEL.folded = false;
         }.bind(this));
@@ -102,12 +103,12 @@ Polymer({
     _newEntryRecursively: function ( entry ) {
         var ctor = Editor.widgets['assets-item'];
         var el = new ctor();
-        el.setIcon( entry.type );
 
         if ( entry.children ) {
             entry.children.forEach( function ( childEntry ) {
                 var childEL = this._newEntryRecursively(childEntry);
                 this.addItem( el, childEL, childEntry.name, childEntry.id );
+                childEL.setIcon( childEntry.type );
                 // childEL.folded = false;
             }.bind(this) );
         }
