@@ -37,6 +37,10 @@ function _binaryInsert( parentEL, el ) {
 Editor.registerWidget( 'assets-item', {
     is: 'assets-item',
 
+    hostAttributes: {
+        draggable: 'true',
+    },
+
     properties: {
         // basic
 

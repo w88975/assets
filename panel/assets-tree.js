@@ -11,6 +11,8 @@ Polymer({
         'selecting': '_onSelecting',
         'select': '_onSelect',
         'mousedown': '_onMouseDown',
+        'scroll': '_onScroll',
+        'dragstart': '_onDragStart',
     },
 
     properties: {
@@ -182,6 +184,24 @@ Polymer({
 
         event.stopPropagation();
         this.clearSelection();
+    },
+
+    _onScroll: function ( event ) {
+        this.scrollLeft = 0;
+    },
+
+    _onDragStart: function ( event ) {
+        event.stopPropagation();
+
+        var selection = Editor.Selection.curSelection('asset');
+        EditorUI.DragDrop.start(event.dataTransfer, 'copyMove', 'asset', selection.map(function(uuid) {
+            var itemEL = this._id2el[uuid];
+            return {
+                id: uuid,
+                name: itemEL.name,
+                icon: itemEL.$.icon,
+            };
+        }.bind(this)));
     },
 });
 
