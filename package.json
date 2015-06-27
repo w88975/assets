@@ -14,6 +14,7 @@
   "menus": {
     "Panel/Assets": {
       "icon": "panel/icon.png",
+      "accelerator": "CmdOrCtrl+2",
       "message": "assets:open"
     }
   },
