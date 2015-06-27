@@ -23,7 +23,7 @@ function _binaryIndexOf ( elements, key ) {
 }
 
 function _binaryInsert( parentEL, el ) {
-    parentDOM = Polymer.dom(parentEL);
+    var parentDOM = Polymer.dom(parentEL);
 
     var idx = _binaryIndexOf( parentDOM.children, el.name + el.type );
     if ( idx === -1 ) {
