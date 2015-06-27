@@ -235,6 +235,10 @@ Editor.registerWidget( 'assets-item', {
     _onFoldDblClick: function ( event ) {
         event.stopPropagation();
     },
+
+    insertItem: function ( el ) {
+        _binaryInsert( this, el );
+    },
 });
 
 })();
