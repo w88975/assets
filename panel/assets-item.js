@@ -138,13 +138,13 @@ Editor.registerWidget( 'assets-item', {
     //
 
     _nameClass: function ( name ) {
-        if ( name === '' )
+        if ( !name )
             return 'no-name';
         return 'name';
     },
 
     _nameText: function ( name ) {
-        if ( name === '' )
+        if ( !name )
             return 'No Name';
         return name;
     },
