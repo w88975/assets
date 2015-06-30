@@ -55,8 +55,8 @@ Polymer({
                     this.activeItem(prev);
 
                     window.requestAnimationFrame( function() {
-                        if ( prev.offsetTop <= this.scrollTop ) {
-                            this.scrollTop = prev.offsetTop - 2; // 1 for padding, 1 for border
+                        if ( prev.offsetTop <= this.$.content.scrollTop ) {
+                            this.$.content.scrollTop = prev.offsetTop - 2; // 1 for padding, 1 for border
                         }
                     }.bind(this));
                 }
@@ -75,8 +75,8 @@ Polymer({
                     window.requestAnimationFrame( function() {
                         var headerHeight = next.$.header.offsetHeight;
                         var contentHeight = this.offsetHeight - 3; // 2 for border, 1 for padding
-                        if ( next.offsetTop + headerHeight >= this.scrollTop + contentHeight ) {
-                            this.scrollTop = next.offsetTop + headerHeight - contentHeight;
+                        if ( next.offsetTop + headerHeight >= this.$.content.scrollTop + contentHeight ) {
+                            this.$.content.scrollTop = next.offsetTop + headerHeight - contentHeight;
                         }
                     }.bind(this));
                 }
@@ -188,7 +188,7 @@ Polymer({
     },
 
     _onScroll: function ( event ) {
-        this.scrollLeft = 0;
+        this.$.content.scrollLeft = 0;
     },
 
     _onDragStart: function ( event ) {
