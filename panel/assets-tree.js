@@ -11,7 +11,6 @@ Polymer({
         'selecting': '_onSelecting',
         'select': '_onSelect',
         'mousedown': '_onMouseDown',
-        'scroll': '_onScroll',
         'dragstart': '_onDragStart',
         'dragend': '_onDragEnd',
     },
