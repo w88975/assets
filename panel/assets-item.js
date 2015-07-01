@@ -109,21 +109,6 @@ Editor.registerWidget( 'assets-item', {
 
     //
     setIcon: function ( type ) {
-        if ( type === 'mount' ) {
-            this.$.icon.src = 'packages://assets/static/mount.png';
-            return;
-        }
-
-        if ( type === 'asset' ) {
-            this.$.icon.src = 'packages://assets/static/asset.png';
-            return;
-        }
-
-        if ( type === 'folder' ) {
-            this.$.icon.src = 'packages://assets/static/folder.png';
-            return;
-        }
-
         if ( type === 'texture' ) {
             this.$.icon.src = 'uuid://' + this._userId + '?thumbnail';
             return;
