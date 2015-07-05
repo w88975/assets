@@ -18,6 +18,29 @@
     background: #333;
 }
 
+.highlight {
+    display: none;
+    position: absolute;
+    border: 2px solid #c7722c;
+    box-sizing: border-box;
+
+    pointer-events: none;
+}
+
+.highlight[invalid] {
+    border: 2px solid #f00;
+}
+
+.insert {
+    display: none;
+
+    position: absolute;
+    border: 1px solid #0f0;
+    box-sizing: border-box;
+
+    pointer-events: none;
+}
+
 :host ::content assets-item > #content > assets-item {
     margin-left: 18px;
 }

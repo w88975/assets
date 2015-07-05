@@ -6,10 +6,10 @@
     <template>
         <div id="content" class="fit" on-scroll="_onScroll">
             <content></content>
+            <div id="highlightBorder" class="highlight"></div>
+            <div id="insertLine" class="insert"></div>
+            <editor-input id="nameInput" hidden></editor-input>
         </div>
-        <div id="highlightBorder" class="highlight"></div>
-        <div id="insertLine" class="insert"></div>
-        <editor-input id="nameInput" style="display:none"></editor-input>
         <editor-loader id="loader" hidden
             text="Loading"
             mask
