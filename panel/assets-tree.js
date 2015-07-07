@@ -8,11 +8,11 @@ Polymer({
     listeners: {
         'focus': '_onFocus',
         'blur': '_onBlur',
-        'selecting': '_onSelecting',
-        'select': '_onSelect',
         'mousedown': '_onMouseDown',
         'dragstart': '_onDragStart',
         'dragend': '_onDragEnd',
+        'item-selecting': '_onItemSelecting',
+        'item-select': '_onItemSelect',
     },
 
     properties: {
@@ -120,7 +120,7 @@ Polymer({
 
     // events
 
-    _onSelecting: function ( event ) {
+    _onItemSelecting: function ( event ) {
         event.stopPropagation();
 
         var targetEL = event.target;
@@ -166,7 +166,7 @@ Polymer({
         }
     },
 
-    _onSelect: function ( event ) {
+    _onItemSelect: function ( event ) {
         event.stopPropagation();
 
         if ( event.detail.shift ) {
