@@ -1,6 +1,4 @@
 (function () {
-var Util = require('util');
-
 Editor.registerPanel( 'assets.panel', {
     is: 'editor-assets',
 
@@ -8,7 +6,8 @@ Editor.registerPanel( 'assets.panel', {
     },
 
     listeners: {
-        'assets-tree-ready': '_onAssetsTreeReady'
+        'assets-tree-ready': '_onAssetsTreeReady',
+        'open-asset': '_onOpenAsset',
     },
 
     ready: function () {
@@ -131,6 +130,15 @@ Editor.registerPanel( 'assets.panel', {
     _onAssetsTreeReady: function () {
         var localProfile = this.profiles.local;
         this.$.tree.restoreItemStates(localProfile['item-states']);
+    },
+
+    _onOpenAsset: function ( event ) {
+        var uuid = event.detail.uuid;
+        Editor.assetdb.queryInfoByUuid( uuid, function ( info ) {
+            if ( info['meta-type'] === 'javascript' ) {
+                Editor.sendToCore('code-editor:open-by-uuid', uuid);
+            }
+        }.bind(this));
     },
 });
 

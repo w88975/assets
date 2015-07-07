@@ -199,9 +199,9 @@ Editor.registerWidget( 'assets-item', {
         }
 
         event.stopPropagation();
-
-        console.log('edit asset %s', this.name);
-        // this.fire('open');
+        this.fire('open-asset', {
+            uuid: this._userId
+        });
     },
 
     _onFoldMouseDown: function ( event ) {
