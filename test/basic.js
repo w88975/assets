@@ -53,7 +53,7 @@ describe('<editor-assets>', function() {
     });
 
     it('should select the item', function( done ) {
-        var fn = sinon.spy(assetsEL.$.tree, '_onSelect');
+        var fn = sinon.spy(assetsEL.$.tree, '_onItemSelect');
         var itemEL = assetsEL.$.tree._id2el['1b984894-76c5-4687-b3b3-3f6f4e9f5f2c'];
         Tester.click(itemEL);
 
