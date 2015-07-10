@@ -95,6 +95,28 @@ Editor.registerPanel( 'assets.panel', {
         }
     },
 
+    renameCurrentSelected: function ( event ) {
+        if ( event ) {
+            event.stopPropagation();
+            event.preventDefault();
+        }
+
+        if ( this.$.tree._activeElement ) {
+            this.$.tree.rename(this.$.tree._activeElement);
+        }
+    },
+
+    deleteCurrentSelected: function ( event ) {
+        if ( event ) {
+            event.stopPropagation();
+            event.preventDefault();
+        }
+
+        var ids = Editor.Selection.curSelection('asset');
+        Editor.Selection.clear('asset');
+        // TODO: Editor.assetdb.delete ( ids );
+    },
+
     'selection:selected': function ( type, ids ) {
         if ( type !== 'asset' )
             return;
@@ -125,6 +147,10 @@ Editor.registerPanel( 'assets.panel', {
             return;
 
         this.$.tree.deactiveItemById(id);
+    },
+
+    'asset-db:asset-moved': function ( info ) {
+        this.$.tree.moveItemById( info.uuid, info.parentUuid, info.name );
     },
 
     _onAssetsTreeReady: function () {

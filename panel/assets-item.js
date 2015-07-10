@@ -30,7 +30,9 @@ function _binaryInsert( parentEL, el ) {
         parentDOM.appendChild(el);
     }
     else {
-        parentDOM.insertBefore(el, parentDOM.children[idx]);
+        if ( el !== parentDOM.children[idx] ) {
+            parentDOM.insertBefore(el, parentDOM.children[idx]);
+        }
     }
 }
 
@@ -72,7 +74,12 @@ Editor.registerWidget( 'assets-item', {
 
         // advance
 
-        type: {
+        extname: {
+            type: String,
+            value: '',
+        },
+
+        metaType: {
             type: String,
             value: '',
         },

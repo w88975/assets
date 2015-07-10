@@ -41,6 +41,12 @@
     pointer-events: none;
 }
 
+#nameInput {
+    position: absolute;
+    height: 18px;
+    /* width: calc(100% - 11px); */
+}
+
 :host ::content assets-item > #content > assets-item {
     margin-left: 18px;
 }

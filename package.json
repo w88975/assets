@@ -33,14 +33,19 @@
           "shift+up": "shiftSelectPrev",
           "shift+down": "shiftSelectNext",
           "left": "foldCurrent",
-          "right": "foldupCurrent"
+          "right": "foldupCurrent",
+          "enter": "renameCurrentSelected",
+          "f2": "renameCurrentSelected",
+          "command+backspace": "deleteCurrentSelected",
+          "ctrl+backspace": "deleteCurrentSelected"
         }
       },
       "messages": [
         "selection:selected",
         "selection:unselected",
         "selection:activated",
-        "selection:deactivated"
+        "selection:deactivated",
+        "asset-db:asset-moved"
       ],
       "profiles": {
         "local": {

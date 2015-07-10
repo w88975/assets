@@ -1,4 +1,5 @@
 (function () {
+var Url = require('fire-url');
 
 Polymer({
     is: 'assets-tree',
@@ -32,6 +33,24 @@ Polymer({
             this.$.loader.hidden = true;
             console.log('assets-tree-ready');
             this.fire('assets-tree-ready');
+        }.bind(this));
+    },
+
+    rename: function ( element ) {
+        var treeBCR = this.getBoundingClientRect();
+        var elBCR = element.getBoundingClientRect();
+        var offsetTop = elBCR.top - treeBCR.top - 1;
+        var offsetLeft = elBCR.left - treeBCR.left + 27 - 4;
+        this.$.nameInput.style.top = (this.$.content.scrollTop + offsetTop) + 'px';
+        this.$.nameInput.style.left = offsetLeft + 'px';
+        this.$.nameInput.style.width = 'calc(100% - ' + offsetLeft + 'px)';
+
+        this.$.nameInput.hidden = false;
+        this.$.nameInput.value = element.name;
+        this.$.nameInput.focus();
+        this.$.nameInput._renamingEL = element;
+        window.requestAnimationFrame( function () {
+            this.$.nameInput.select();
         }.bind(this));
     },
 
@@ -83,11 +102,52 @@ Polymer({
         }
     },
 
+    getUrl: function(element) {
+        if (element.metaType === 'mount') {
+            return element.name + '://';
+        }
+
+        var url = element.name + element.extname;
+        var parentEL = Polymer.dom(element).parentNode;
+        while (parentEL instanceof Editor.widgets['assets-item']) {
+            if (parentEL.metaType === 'mount') {
+                url = parentEL.name + '://' + url;
+                break;
+            } else {
+                url = Url.join(parentEL.name + parentEL.extname, url);
+                parentEL = Polymer.dom(parentEL).parentNode;
+            }
+        }
+        return url;
+    },
+
+    moveItemById: function ( id, parentID, name ) {
+        var srcEL = this._id2el[id];
+        if ( !srcEL ) {
+            Editor.warn('Can not find source element by id: %s', id);
+            return;
+        }
+
+        // rename it first
+        srcEL.name = name;
+
+        // insert it
+        this.setItemParentById(id, parentID);
+
+        // expand parent
+        var parentEL = this._id2el[parentID];
+        if ( parentEL && parentEL.foldable ) {
+            parentEL.folded = false;
+        }
+    },
+
     _build: function ( data ) {
         console.time('assets-tree._build()');
         data.forEach( function ( entry ) {
             var newEL = this._newEntryRecursively(entry);
             this.addItem( this, newEL, entry.name, entry.id );
+            newEL.metaType = entry.type;
+            newEL.extname = entry.extname;
             newEL.setIcon( entry.type );
 
             newEL.folded = false;
@@ -110,8 +170,9 @@ Polymer({
             entry.children.forEach( function ( childEntry ) {
                 var childEL = this._newEntryRecursively(childEntry);
                 this.addItem( el, childEL, childEntry.name, childEntry.id );
+                childEL.metaType = childEntry.type;
+                childEL.extname = childEntry.extname;
                 childEL.setIcon( childEntry.type );
-                // childEL.folded = false;
             }.bind(this) );
         }
 
@@ -190,6 +251,8 @@ Polymer({
         this.$.content.scrollLeft = 0;
     },
 
+    // drag & drop events
+
     _onDragStart: function ( event ) {
         event.stopPropagation();
 
@@ -207,6 +270,39 @@ Polymer({
     _onDragEnd: function ( event ) {
         EditorUI.DragDrop.end();
         Editor.Selection.cancel();
+    },
+
+    // rename events
+
+    _onRenameMouseDown: function ( event ) {
+        event.stopPropagation();
+    },
+
+    _onRenameKeyDown: function ( event ) {
+        event.stopPropagation();
+    },
+
+    _onRenameValueChanged: function ( event ) {
+        var targetEL = this.$.nameInput._renamingEL;
+        if ( targetEL ) {
+            var srcUrl = this.getUrl(targetEL);
+            var destUrl = Url.join(Url.dirname(srcUrl), this.$.nameInput.value + targetEL.extname);
+            Editor.assetdb.move( srcUrl, destUrl );
+
+            this.$.nameInput._renamingEL = null;
+            this.$.nameInput.hidden = true;
+        }
+    },
+
+    _onRenameFocusChanged: function ( event ) {
+        if ( !this.$.nameInput._renamingEL ) {
+            return;
+        }
+
+        if ( !event.detail.value ) {
+            this.$.nameInput._renamingEL = null;
+            this.$.nameInput.hidden = true;
+        }
     },
 });
 
