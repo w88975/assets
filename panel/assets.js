@@ -1,4 +1,6 @@
 (function () {
+var Path = require('fire-path');
+
 Editor.registerPanel( 'assets.panel', {
     is: 'editor-assets',
 
@@ -113,8 +115,11 @@ Editor.registerPanel( 'assets.panel', {
         }
 
         var ids = Editor.Selection.curSelection('asset');
-        Editor.Selection.clear('asset');
-        // TODO: Editor.assetdb.delete ( ids );
+        var urls = ids.map(function (id) {
+            var el = this.$.tree._id2el[id];
+            return this.$.tree.getUrl(el);
+        }.bind(this));
+        Editor.assetdb.delete(urls);
     },
 
     'selection:selected': function ( type, ids ) {
@@ -149,8 +154,43 @@ Editor.registerPanel( 'assets.panel', {
         this.$.tree.deactiveItemById(id);
     },
 
-    'asset-db:asset-moved': function ( info ) {
-        this.$.tree.moveItemById( info.uuid, info.parentUuid, info.name );
+    'asset-db:assets-moved': function ( results ) {
+        var filterResults = Editor.Utils.arrayCmpFilter ( results, function ( a, b ) {
+            if ( Path.contains( a.srcPath, b.srcPath ) ) {
+                return 1;
+            }
+            if ( Path.contains( b.srcPath, a.srcPath ) ) {
+                return -1;
+            }
+            return 0;
+        });
+
+        filterResults.forEach( function ( result ) {
+            this.$.tree.moveItemById( result.uuid,
+                                      result.parentUuid,
+                                      Path.basenameNoExt(result.destPath) );
+        }.bind(this) );
+    },
+
+    'asset-db:assets-deleted': function ( results ) {
+        var filterResults = Editor.Utils.arrayCmpFilter ( results, function ( a, b ) {
+            if ( Path.contains( a.path, b.path ) ) {
+                return 1;
+            }
+            if ( Path.contains( b.path, a.path ) ) {
+                return -1;
+            }
+            return 0;
+        });
+
+        filterResults.forEach( function ( result ) {
+            this.$.tree.removeItemById( result.uuid );
+        }.bind(this) );
+
+        var uuids = results.map( function ( result ) {
+            return result.uuid;
+        });
+        Editor.Selection.unselect('asset', uuids, true);
     },
 
     _onAssetsTreeReady: function () {

@@ -45,7 +45,8 @@
         "selection:unselected",
         "selection:activated",
         "selection:deactivated",
-        "asset-db:asset-moved"
+        "asset-db:assets-moved",
+        "asset-db:assets-deleted"
       ],
       "profiles": {
         "local": {
