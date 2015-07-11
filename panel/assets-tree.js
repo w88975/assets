@@ -1,10 +1,40 @@
 (function () {
 var Url = require('fire-url');
+var Path = require('fire-path');
+
+function _getNameCollisions(itemELs, list) {
+
+    var elementsLen = itemELs.length;
+    var len = list.length;
+    var i, j;
+    var name;
+    var node;
+    var collisions = [];
+
+    for (i = 0; i < len; i++) {
+        name = list[i];
+
+        for (j = 0; j < elementsLen; j++) {
+
+            node = itemELs[j];
+            if ( node.name + node.extname === name ) {
+                collisions.push(node);
+            }
+
+        }
+    }
+
+    return collisions;
+}
 
 Polymer({
     is: 'assets-tree',
 
-    behaviors: [EditorUI.focusable, EditorUI.idtree],
+    behaviors: [EditorUI.focusable, EditorUI.droppable, EditorUI.idtree],
+
+    hostAttributes: {
+        'droppable': 'file,asset,node',
+    },
 
     listeners: {
         'focus': '_onFocus',
@@ -12,6 +42,10 @@ Polymer({
         'mousedown': '_onMouseDown',
         'dragstart': '_onDragStart',
         'dragend': '_onDragEnd',
+        'dragover': '_onDragOver',
+        'drop-area-enter': '_onDropAreaEnter',
+        'drop-area-leave': '_onDropAreaLeave',
+        'drop-area-accept': '_onDropAreaAccept',
         'item-selecting': '_onItemSelecting',
         'item-select': '_onItemSelect',
     },
@@ -24,8 +58,16 @@ Polymer({
 
     ready: function () {
         this._shiftStartElement = null;
+        this._conflictElements = [];
 
         this._initFocusable(this);
+        this._initDroppable(this);
+
+        this.refresh();
+    },
+
+    refresh: function () {
+        this.clear();
 
         this.$.loader.hidden = false;
         Editor.assetdb.deepQuery(function ( results ) {
@@ -269,7 +311,119 @@ Polymer({
 
     _onDragEnd: function ( event ) {
         EditorUI.DragDrop.end();
+
         Editor.Selection.cancel();
+        this._cancelHighligting();
+        this._curDragoverEL = null;
+    },
+
+    _onDragOver: function ( event ) {
+        var dragType = EditorUI.DragDrop.type(event.dataTransfer);
+        if ( dragType !== 'node' && dragType !== 'asset' && dragType !== 'file' ) {
+            EditorUI.DragDrop.allowDrop( event.dataTransfer, false );
+            return;
+        }
+
+        //
+        event.preventDefault();
+        event.stopPropagation();
+
+        //
+        if ( event.target ) {
+            var targetEL = Polymer.dom(event).localTarget;
+            var dragoverEL = targetEL;
+            var thisDOM = Polymer.dom(this);
+
+            // NOTE: invalid assets browser, no mount in it
+            if ( thisDOM.children.length === 0 ) {
+                return;
+            }
+
+            // get drag over target
+            if ( dragoverEL === this ) {
+                dragoverEL = thisDOM.firstElementChild;
+            }
+            if ( !dragoverEL.foldable ) {
+                dragoverEL = Polymer.dom(dragoverEL).parentNode;
+            }
+
+            // do conflict check if we last dragover is not the same
+            if ( dragoverEL !== this._curDragoverEL ) {
+                this._cancelHighligting();
+                this._curDragoverEL = dragoverEL;
+
+                this._highlightBorder( dragoverEL );
+
+                // name collision check
+                var names = [];
+                var i = 0;
+                var dragItems = EditorUI.DragDrop.items(event.dataTransfer);
+
+                if (dragType === 'file') {
+                    for (i = 0; i < dragItems.length; i++) {
+                        names.push(Path.basename(dragItems[i]));
+                    }
+                } else if (dragType === 'asset') {
+                    // TODO
+                    // var srcELs = this.getToplevelElements(dragItems);
+                    // for (i = 0; i < srcELs.length; i++) {
+                    //     var srcEL = srcELs[i];
+                    //     if (dragoverEL !== srcEL.parentElement) {
+                    //         names.push(srcEL.name + srcEL.extname);
+                    //     }
+                    // }
+                }
+
+                // check if we have conflicts names
+                var valid = true;
+                if (names.length > 0) {
+                    var resultELs = _getNameCollisions( Polymer.dom(dragoverEL).children, names);
+                    if (resultELs.length > 0) {
+                        this._highlightConflicts(resultELs);
+                        valid = false;
+                    }
+                }
+                EditorUI.DragDrop.allowDrop(event.dataTransfer, valid);
+            }
+
+            // highlight insert
+            var bcr = this.getBoundingClientRect();
+            var offsetY = event.clientY - bcr.top + this.$.content.scrollTop;
+            var position = 'before';
+            if (offsetY >= (targetEL.offsetTop + targetEL.offsetHeight * 0.5))
+                position = 'after';
+            this._highlightInsert(targetEL, dragoverEL, position);
+        }
+
+        //
+        var dropEffect = 'none';
+        if ( dragType === 'node' || dragType === 'file' ) {
+            dropEffect = 'copy';
+        } else if ( dragType === 'asset' ) {
+            dropEffect = 'move';
+        }
+        EditorUI.DragDrop.updateDropEffect(event.dataTransfer, dropEffect);
+    },
+
+    _onDropAreaEnter: function ( event ) {
+        event.stopPropagation();
+    },
+
+    _onDropAreaLeave: function ( event ) {
+        event.stopPropagation();
+
+        this._cancelHighligting();
+        this._curDragoverEL = null;
+    },
+
+    _onDropAreaAccept: function ( event ) {
+        event.stopPropagation();
+
+        Editor.Selection.cancel();
+        this._cancelHighligting();
+        this._curDragoverEL = null;
+
+        // TODO:
     },
 
     // rename events
@@ -303,6 +457,78 @@ Polymer({
             this.$.nameInput._renamingEL = null;
             this.$.nameInput.hidden = true;
         }
+    },
+
+    // highlighting
+
+    _highlightBorder: function ( itemEL ) {
+        if ( itemEL && itemEL instanceof Editor.widgets['assets-item'] ) {
+            var style = this.$.highlightBorder.style;
+            style.display = 'block';
+            style.left = (itemEL.offsetLeft-2) + 'px';
+            style.top = (itemEL.offsetTop-1) + 'px';
+            style.width = (itemEL.offsetWidth+4) + 'px';
+            style.height = (itemEL.offsetHeight+3) + 'px';
+
+            itemEL.highlighted = true;
+        }
+        else {
+            this.$.highlightBorder.style.display = 'none';
+        }
+    },
+
+    _highlightInsert: function ( itemEL, parentEL, position ) {
+        var style = this.$.insertLine.style;
+        if (itemEL === this) {
+            itemEL = this.firstChild;
+        }
+
+        if (itemEL === parentEL) {
+            style.display = 'none';
+        } else if (itemEL && parentEL) {
+            style.display = 'block';
+            style.left = parentEL.offsetLeft + 'px';
+
+            if (position === 'before')
+                style.top = (itemEL.offsetTop) + 'px';
+            else
+                style.top = (itemEL.offsetTop + itemEL.offsetHeight) + 'px';
+
+            style.width = parentEL.offsetWidth + 'px';
+            style.height = '0px';
+        }
+    },
+
+    _highlightConflicts: function(itemELs) {
+        for (var i = 0; i < itemELs.length; ++i) {
+            var itemEL = itemELs[i];
+            if ( itemEL.conflicted === false ) {
+                itemEL.conflicted = true;
+                this._conflictElements.push(itemEL);
+            }
+        }
+
+        if (this._curDragoverEL) {
+            this._curDragoverEL.invalid = true;
+        }
+
+        this.$.highlightBorder.setAttribute('invalid', '');
+    },
+
+    _cancelHighligting: function () {
+        this.$.highlightBorder.style.display = 'none';
+        this.$.insertLine.style.display = 'none';
+
+        if (this._curDragoverEL) {
+            this._curDragoverEL.highlighted = false;
+            this._curDragoverEL.invalid = false;
+            this.$.highlightBorder.removeAttribute('invalid');
+        }
+
+        this._conflictElements.forEach(function ( el ) {
+            el.conflicted = false;
+        });
+        this._conflictElements = [];
     },
 });
 

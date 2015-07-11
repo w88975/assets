@@ -5,6 +5,10 @@ Editor.registerPanel( 'assets.panel', {
     is: 'editor-assets',
 
     properties: {
+        activeItemUrl: {
+            type: String,
+            value: '',
+        },
     },
 
     listeners: {
@@ -145,6 +149,7 @@ Editor.registerPanel( 'assets.panel', {
             return;
 
         this.$.tree.activeItemById(id);
+        this.activeItemUrl = this.$.tree.getUrl(this.$.tree._activeElement);
     },
 
     'selection:deactivated': function ( type, id ) {
@@ -205,6 +210,11 @@ Editor.registerPanel( 'assets.panel', {
                 Editor.sendToCore('code-editor:open-by-uuid', uuid);
             }
         }.bind(this));
+    },
+
+    _onRefresh: function ( event ) {
+        event.stopPropagation();
+        this.$.tree.refresh();
     },
 });
 

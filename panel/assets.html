@@ -12,6 +12,12 @@
             <editor-input id="search" class="flex-1" placeholder="Search..."></editor-input>
         </editor-toolbar>
         <assets-tree id="tree" class="flex-1"></assets-tree>
+        <editor-toolbar>
+            <span class="path flex-1">{{activeItemUrl}}</span>
+            <editor-button on-click="_onRefresh">
+                <i class="fa fa-refresh"></i>
+            </editor-button>
+        </editor-toolbar>
     </template>
 </dom-module>
 
