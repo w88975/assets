@@ -231,6 +231,13 @@ Editor.registerWidget( 'assets-item', {
     insertItem: function ( el ) {
         _binaryInsert( this, el );
     },
+
+    canAddChild: function () {
+        return this.metaType === 'folder' ||
+               this.metaType === 'mount'
+               // TODO: this.isFolderAsset
+               ;
+    },
 });
 
 })();

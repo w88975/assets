@@ -343,7 +343,7 @@ Polymer({
             if ( insertParentEL === this ) {
                 insertParentEL = thisDOM.firstElementChild;
             }
-            if ( !insertParentEL.foldable ) {
+            if ( !insertParentEL.canAddChild() ) {
                 insertParentEL = Polymer.dom(insertParentEL).parentNode;
             }
 
@@ -417,12 +417,46 @@ Polymer({
 
     _onDropAreaAccept: function ( event ) {
         event.stopPropagation();
+        var targetEL = this._curInsertParentEL;
 
         Editor.Selection.cancel();
         this._cancelHighligting();
         this._curInsertParentEL = null;
 
-        // TODO:
+        //
+        if ( event.detail.dragItems.length === 0 ) {
+            return;
+        }
+
+        var dragItems = event.detail.dragItems;
+
+        // process drop
+        if ( event.detail.dragType === 'node' ) {
+            Editor.info('TODO: @Jare, please implement Prefab!');
+        }
+        else if ( event.detail.dragType === 'asset' ) {
+            if ( targetEL ) {
+                var destUrl = this.getUrl(targetEL);
+                var srcELs = this.getToplevelElements(dragItems);
+
+                for (var i = 0; i < srcELs.length; ++i) {
+                    var srcEL = srcELs[i];
+
+                    // do nothing if we already here
+                    if (srcEL === targetEL ||
+                        Polymer.dom(srcEL).parentNode === targetEL)
+                        continue;
+
+                    if ( srcEL.contains(targetEL) === false ) {
+                        var srcUrl = this.getUrl(srcEL);
+                        Editor.assetdb.move( srcUrl, destUrl );
+                    }
+                }
+            }
+        }
+        else if ( event.detail.dragType === 'file' ) {
+            // TODO:
+        }
     },
 
     // rename events
