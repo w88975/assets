@@ -20,6 +20,7 @@
 
 .highlight {
     display: none;
+
     position: absolute;
     border: 2px solid #c7722c;
     box-sizing: border-box;

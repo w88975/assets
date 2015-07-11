@@ -314,7 +314,7 @@ Polymer({
 
         Editor.Selection.cancel();
         this._cancelHighligting();
-        this._curDragoverEL = null;
+        this._curInsertParentEL = null;
     },
 
     _onDragOver: function ( event ) {
@@ -330,8 +330,8 @@ Polymer({
 
         //
         if ( event.target ) {
-            var targetEL = Polymer.dom(event).localTarget;
-            var dragoverEL = targetEL;
+            var dragoverEL = Polymer.dom(event).localTarget;
+            var insertParentEL = dragoverEL;
             var thisDOM = Polymer.dom(this);
 
             // NOTE: invalid assets browser, no mount in it
@@ -340,19 +340,19 @@ Polymer({
             }
 
             // get drag over target
-            if ( dragoverEL === this ) {
-                dragoverEL = thisDOM.firstElementChild;
+            if ( insertParentEL === this ) {
+                insertParentEL = thisDOM.firstElementChild;
             }
-            if ( !dragoverEL.foldable ) {
-                dragoverEL = Polymer.dom(dragoverEL).parentNode;
+            if ( !insertParentEL.foldable ) {
+                insertParentEL = Polymer.dom(insertParentEL).parentNode;
             }
 
             // do conflict check if we last dragover is not the same
-            if ( dragoverEL !== this._curDragoverEL ) {
+            if ( insertParentEL !== this._curInsertParentEL ) {
                 this._cancelHighligting();
-                this._curDragoverEL = dragoverEL;
+                this._curInsertParentEL = insertParentEL;
 
-                this._highlightBorder( dragoverEL );
+                this._highlightBorder( insertParentEL );
 
                 // name collision check
                 var names = [];
@@ -364,20 +364,19 @@ Polymer({
                         names.push(Path.basename(dragItems[i]));
                     }
                 } else if (dragType === 'asset') {
-                    // TODO
-                    // var srcELs = this.getToplevelElements(dragItems);
-                    // for (i = 0; i < srcELs.length; i++) {
-                    //     var srcEL = srcELs[i];
-                    //     if (dragoverEL !== srcEL.parentElement) {
-                    //         names.push(srcEL.name + srcEL.extname);
-                    //     }
-                    // }
+                    var srcELs = this.getToplevelElements(dragItems);
+                    for (i = 0; i < srcELs.length; i++) {
+                        var srcEL = srcELs[i];
+                        if (insertParentEL !== Polymer.dom(srcEL).parentNode) {
+                            names.push(srcEL.name + srcEL.extname);
+                        }
+                    }
                 }
 
                 // check if we have conflicts names
                 var valid = true;
                 if (names.length > 0) {
-                    var resultELs = _getNameCollisions( Polymer.dom(dragoverEL).children, names);
+                    var resultELs = _getNameCollisions( Polymer.dom(insertParentEL).children, names);
                     if (resultELs.length > 0) {
                         this._highlightConflicts(resultELs);
                         valid = false;
@@ -390,9 +389,9 @@ Polymer({
             var bcr = this.getBoundingClientRect();
             var offsetY = event.clientY - bcr.top + this.$.content.scrollTop;
             var position = 'before';
-            if (offsetY >= (targetEL.offsetTop + targetEL.offsetHeight * 0.5))
+            if (offsetY >= (dragoverEL.offsetTop + dragoverEL.offsetHeight * 0.5))
                 position = 'after';
-            this._highlightInsert(targetEL, dragoverEL, position);
+            this._highlightInsert(dragoverEL, insertParentEL, position);
         }
 
         //
@@ -413,7 +412,7 @@ Polymer({
         event.stopPropagation();
 
         this._cancelHighligting();
-        this._curDragoverEL = null;
+        this._curInsertParentEL = null;
     },
 
     _onDropAreaAccept: function ( event ) {
@@ -421,7 +420,7 @@ Polymer({
 
         Editor.Selection.cancel();
         this._cancelHighligting();
-        this._curDragoverEL = null;
+        this._curInsertParentEL = null;
 
         // TODO:
     },
@@ -487,8 +486,8 @@ Polymer({
             style.display = 'none';
         } else if (itemEL && parentEL) {
             style.display = 'block';
-            style.left = parentEL.offsetLeft + 'px';
 
+            style.left = parentEL.offsetLeft + 'px';
             if (position === 'before')
                 style.top = (itemEL.offsetTop) + 'px';
             else
@@ -508,8 +507,8 @@ Polymer({
             }
         }
 
-        if (this._curDragoverEL) {
-            this._curDragoverEL.invalid = true;
+        if (this._curInsertParentEL) {
+            this._curInsertParentEL.invalid = true;
         }
 
         this.$.highlightBorder.setAttribute('invalid', '');
@@ -519,9 +518,9 @@ Polymer({
         this.$.highlightBorder.style.display = 'none';
         this.$.insertLine.style.display = 'none';
 
-        if (this._curDragoverEL) {
-            this._curDragoverEL.highlighted = false;
-            this._curDragoverEL.invalid = false;
+        if (this._curInsertParentEL) {
+            this._curInsertParentEL.highlighted = false;
+            this._curInsertParentEL.invalid = false;
             this.$.highlightBorder.removeAttribute('invalid');
         }
 

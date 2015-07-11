@@ -1,11 +1,25 @@
 :host[conflicted] > #bar {
-    background-color: #900;
+    background-color: #cc0;
+}
+
+:host[conflicted] > #header > .wrapper {
+    color: black;
 }
 
 :host[highlighted] > #header {
     background-color: #c7722c;
 }
 
+:host[highlighted] > #header > .wrapper {
+    color: black;
+    font-weight: bold;
+}
+
 :host[invalid] > #header {
     background-color: #f00;
+}
+
+:host[invalid] > #header > .wrapper {
+    color: black;
+    font-weight: bold;
 }

@@ -5,17 +5,15 @@
     <template>
         <div id="bar"></div>
         <div id="header">
-            <div class="inline-block-wrapper">
-                <div class="flex-wrapper">
-                    <i id="foldIcon" class$="{{_foldIconClass(folded)}}"
-                       on-mousedown="_onFoldMouseDown"
-                       on-click="_onFoldClick"
-                       on-dblclick="_onFoldDblClick"
-                       >
-                    </i>
-                    <img id="icon" draggable="false"></img>
-                    <span id="name" class$="{{_nameClass(name)}}">{{_nameText(name)}}</span>
-                </div>
+            <div class="wrapper">
+                <i id="foldIcon" class$="{{_foldIconClass(folded)}}"
+                   on-mousedown="_onFoldMouseDown"
+                   on-click="_onFoldClick"
+                   on-dblclick="_onFoldDblClick"
+                   >
+                </i>
+                <img id="icon" draggable="false"></img>
+                <span id="name" class$="{{_nameClass(name)}}">{{_nameText(name)}}</span>
             </div>
         </div>
         <div id="content">
