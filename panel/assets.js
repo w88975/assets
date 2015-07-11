@@ -148,6 +148,9 @@ Editor.registerPanel( 'assets.panel', {
         if ( type !== 'asset' )
             return;
 
+        if ( !id )
+            return;
+
         this.$.tree.activeItemById(id);
         this.activeItemUrl = this.$.tree.getUrl(this.$.tree._activeElement);
     },
