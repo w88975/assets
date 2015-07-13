@@ -66,9 +66,8 @@ function getCreateTemplate () {
     return _appendRegisteredTo([
         {
             label: 'Folder',
-            click: function() {
-                Editor.info('TODO - Create Folder');
-            }
+            message: 'assets:new-asset',
+            params: ['New Folder', 'folder']
         },
 
         {
@@ -87,12 +86,6 @@ function _findMenu(menuArray, label) {
         }
     }
     return null;
-}
-
-function _click(item) {
-    var meta = item.meta;
-    var filename = item.filename;
-    Editor.info('TODO - Create', filename);
 }
 
 // Append custom asset menu items to target template
@@ -155,7 +148,8 @@ function _appendRegisteredTo (target) {
         }
         else {
             if (newMenu && !newMenu.submenu) {
-                newMenu.click = _click.bind(this, item);
+                newMenu.message = item.message;
+                newMenu.params = item.params;
             }
             else {
                 Editor.error('Invalid asset menu path: ' + item.menuPath);
