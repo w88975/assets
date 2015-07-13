@@ -162,6 +162,18 @@ Editor.registerPanel( 'assets.panel', {
         this.$.tree.deactiveItemById(id);
     },
 
+    'asset-db:assets-created': function ( results ) {
+        results.forEach( function ( result ) {
+            this.$.tree.addNewItemById(
+                result.uuid,
+                result.parentUuid,
+                result.name,
+                result.extname,
+                result.type
+            );
+        }.bind(this) );
+    },
+
     'asset-db:assets-moved': function ( results ) {
         var filterResults = Editor.Utils.arrayCmpFilter ( results, function ( a, b ) {
             if ( Path.contains( a.srcPath, b.srcPath ) ) {

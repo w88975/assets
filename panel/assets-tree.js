@@ -183,6 +183,17 @@ Polymer({
         }
     },
 
+    addNewItemById: function ( uuid, parentID, name, extname, metaType ) {
+        var parentEL = this._id2el[parentID];
+        var ctor = Editor.widgets['assets-item'];
+        var newEL = new ctor();
+
+        this.addItem( parentEL, newEL, name, uuid );
+        newEL.metaType = metaType;
+        newEL.extname = extname;
+        newEL.setIcon( metaType );
+    },
+
     _build: function ( data ) {
         console.time('assets-tree._build()');
         data.forEach( function ( entry ) {

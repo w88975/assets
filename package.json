@@ -45,6 +45,7 @@
         "selection:unselected",
         "selection:activated",
         "selection:deactivated",
+        "asset-db:assets-created",
         "asset-db:assets-moved",
         "asset-db:assets-deleted"
       ],
