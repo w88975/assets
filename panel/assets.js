@@ -213,6 +213,10 @@ Editor.registerPanel( 'assets.panel', {
         Editor.Selection.unselect('asset', uuids, true);
     },
 
+    'assets:new-asset': function ( filename, metaType ) {
+        Editor.info('TODO - create', filename);
+    },
+
     _onAssetsTreeReady: function () {
         var localProfile = this.profiles.local;
         this.$.tree.restoreItemStates(localProfile['item-states']);
@@ -231,6 +235,11 @@ Editor.registerPanel( 'assets.panel', {
         event.stopPropagation();
         this.$.tree.refresh();
     },
+
+    _onCreateClick: function ( event ) {
+        var rect = this.$.createBtn.getBoundingClientRect();
+        Editor.sendToCore('assets:popup-create-menu', rect.left, rect.bottom + 5, Editor.requireIpcEvent);
+    }
 });
 
 })();
