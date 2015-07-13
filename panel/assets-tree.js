@@ -187,7 +187,7 @@ Polymer({
         console.time('assets-tree._build()');
         data.forEach( function ( entry ) {
             var newEL = this._newEntryRecursively(entry);
-            this.addItem( this, newEL, entry.name, entry.id );
+            this.addItem( this, newEL, entry.name, entry.uuid );
             newEL.metaType = entry.type;
             newEL.extname = entry.extname;
             newEL.setIcon( entry.type );
@@ -211,7 +211,7 @@ Polymer({
         if ( entry.children ) {
             entry.children.forEach( function ( childEntry ) {
                 var childEL = this._newEntryRecursively(childEntry);
-                this.addItem( el, childEL, childEntry.name, childEntry.id );
+                this.addItem( el, childEL, childEntry.name, childEntry.uuid );
                 childEL.metaType = childEntry.type;
                 childEL.extname = childEntry.extname;
                 childEL.setIcon( childEntry.type );
@@ -429,6 +429,7 @@ Polymer({
         }
 
         var dragItems = event.detail.dragItems;
+        var destUrl = this.getUrl(targetEL);
 
         // process drop
         if ( event.detail.dragType === 'node' ) {
@@ -436,7 +437,6 @@ Polymer({
         }
         else if ( event.detail.dragType === 'asset' ) {
             if ( targetEL ) {
-                var destUrl = this.getUrl(targetEL);
                 var srcELs = this.getToplevelElements(dragItems);
 
                 for (var i = 0; i < srcELs.length; ++i) {
@@ -455,7 +455,9 @@ Polymer({
             }
         }
         else if ( event.detail.dragType === 'file' ) {
-            // TODO:
+            if ( targetEL ) {
+                Editor.assetdb.import( dragItems, destUrl );
+            }
         }
     },
 
