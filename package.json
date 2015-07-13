@@ -48,7 +48,8 @@
         "asset-db:assets-created",
         "asset-db:assets-moved",
         "asset-db:assets-deleted",
-        "assets:new-asset"
+        "assets:new-asset",
+        "assets:rename-asset"
       ],
       "profiles": {
         "local": {

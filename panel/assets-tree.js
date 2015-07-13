@@ -40,6 +40,7 @@ Polymer({
         'focus': '_onFocus',
         'blur': '_onBlur',
         'mousedown': '_onMouseDown',
+        'contextmenu': '_onContextMenu',
         'dragstart': '_onDragStart',
         'dragend': '_onDragEnd',
         'dragover': '_onDragOver',
@@ -298,6 +299,20 @@ Polymer({
 
         event.stopPropagation();
         this.clearSelection();
+    },
+
+    _onContextMenu: function ( event ) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        var contextEL = Polymer.dom(event).localTarget;
+        Editor.sendToCore(
+            'assets:popup-context-menu',
+            event.clientX,
+            event.clientY,
+            contextEL._userId,
+            Editor.requireIpcEvent
+        );
     },
 
     _onScroll: function ( event ) {

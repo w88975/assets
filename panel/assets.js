@@ -213,8 +213,48 @@ Editor.registerPanel( 'assets.panel', {
         Editor.Selection.unselect('asset', uuids, true);
     },
 
-    'assets:new-asset': function ( filename, metaType ) {
-        Editor.info('TODO - create', filename);
+    'assets:new-asset': function ( filename, metaType, contextUuid ) {
+        // get parent url
+        var url, el, parentUrl;
+        if ( contextUuid ) {
+            el = this.$.tree._id2el[contextUuid];
+            if ( el.metaType === 'folder' || el.metaType === 'mount' ) {
+                parentUrl = this.$.tree.getUrl(el);
+            }
+            else {
+                url = this.$.tree.getUrl(el);
+                parentUrl = Path.dirname(url);
+            }
+        }
+        else {
+            var uuid = Editor.Selection.curSelection('asset');
+            if ( uuid.length > 0 ) {
+                el = this.$.tree._id2el[uuid];
+                url = this.$.tree.getUrl(el);
+
+                // if this is not root
+                if ( Polymer.dom(el).parentNode !== this.$.tree ) {
+                    parentUrl = Path.dirname(url);
+                }
+                else {
+                    parentUrl = url;
+                }
+            }
+            else {
+                el = Polymer.dom(this.$.tree).firstElementChild;
+                parentUrl = this.$.tree.getUrl(el);
+            }
+        }
+
+        //
+        Editor.assetdb.create( Path.join(parentUrl, filename), null );
+    },
+
+    'assets:rename-asset': function ( uuid ) {
+        var el = this.$.tree._id2el[uuid];
+        if ( el ) {
+            this.$.tree.rename(el);
+        }
     },
 
     _onAssetsTreeReady: function () {
