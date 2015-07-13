@@ -237,7 +237,7 @@ Editor.registerPanel( 'assets.panel', {
     },
 
     _onCreateClick: function ( event ) {
-        var rect = this.$.create.getBoundingClientRect();
+        var rect = this.$.createBtn.getBoundingClientRect();
         Editor.sendToCore('assets:popup-create-menu', rect.left, rect.bottom + 5, Editor.requireIpcEvent);
     }
 });
