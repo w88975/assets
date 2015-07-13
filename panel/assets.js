@@ -231,6 +231,11 @@ Editor.registerPanel( 'assets.panel', {
         event.stopPropagation();
         this.$.tree.refresh();
     },
+
+    _onCreateClick: function ( event ) {
+        var rect = this.$.create.getBoundingClientRect();
+        Editor.sendToCore('assets:popup-create-menu', rect.left, rect.bottom + 5, Editor.requireIpcEvent);
+    }
 });
 
 })();
