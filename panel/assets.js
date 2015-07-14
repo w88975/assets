@@ -229,6 +229,9 @@ Editor.registerPanel( 'assets.panel', {
                     url = this.$.tree.getUrl(el);
                     parentUrl = Path.dirname(url);
                 }
+            } else {
+                el = Polymer.dom(this.$.tree).firstElementChild;
+                parentUrl = this.$.tree.getUrl(el);
             }
         } else {
             var uuid = Editor.Selection.curSelection('asset');
@@ -282,7 +285,7 @@ Editor.registerPanel( 'assets.panel', {
         if ( contextUuids.length > 0 ) {
             var uuid = contextUuids[0];
             var el = this.$.tree._id2el[uuid];
-            Edtior.asset.explore( this.$.tree.getUrl(el) );
+            Editor.assetdb.explore( this.$.tree.getUrl(el) );
         }
     },
 
@@ -291,7 +294,7 @@ Editor.registerPanel( 'assets.panel', {
         if ( contextUuids.length > 0 ) {
             var uuid = contextUuids[0];
             var el = this.$.tree._id2el[uuid];
-            Edtior.asset.exploreLib( this.$.tree.getUrl(el) );
+            Editor.assetdb.exploreLib( this.$.tree.getUrl(el) );
         }
     },
 
@@ -312,8 +315,12 @@ Editor.registerPanel( 'assets.panel', {
     _onOpenAsset: function ( event ) {
         var uuid = event.detail.uuid;
         Editor.assetdb.queryInfoByUuid( uuid, function ( info ) {
-            if ( info['meta-type'] === 'javascript' ) {
+            var metaType = info['meta-type'];
+            if ( metaType === 'javascript' ) {
                 Editor.sendToCore('code-editor:open-by-uuid', uuid);
+            }
+            else if ( metaType === 'scene' ) {
+                Editor.sendToPanel('scene.panel', 'scene:open-by-uuid', uuid);
             }
         }.bind(this));
     },
