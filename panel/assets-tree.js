@@ -306,11 +306,12 @@ Polymer({
         event.stopPropagation();
 
         var contextEL = Polymer.dom(event).localTarget;
+        Editor.Selection.setContext('asset',contextEL._userId);
+
         Editor.sendToCore(
             'assets:popup-context-menu',
             event.clientX,
             event.clientY,
-            contextEL._userId,
             Editor.requireIpcEvent
         );
     },

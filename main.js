@@ -23,11 +23,11 @@ module.exports = {
         editorMenu.dispose();
     },
 
-    'assets:popup-context-menu': function (event, x, y, uuid) {
+    'assets:popup-context-menu': function (event, x, y) {
         // // NOTE: without this, we will create new assets while watching ON
         // BrowserWindow.fromWebContents(event.sender).focus();
 
-        var template = Menu.getContextTemplate(uuid);
+        var template = Menu.getContextTemplate();
         var editorMenu = new Editor.Menu(template, event.sender);
         // editorMenu.add( '', Editor.menus['create-asset'] );
 

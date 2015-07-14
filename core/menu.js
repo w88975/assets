@@ -1,10 +1,10 @@
 var Shell = require('shell');
 
-function getContextTemplate ( uuid ) {
+function getContextTemplate () {
     return [
         {
             label: 'Create',
-            submenu: getCreateTemplate( uuid )
+            submenu: getCreateTemplate(true)
         },
 
         {
@@ -15,15 +15,15 @@ function getContextTemplate ( uuid ) {
         {
             label: 'Rename',
             click: function() {
-                Editor.sendToPanel('assets.panel', 'assets:rename-asset', uuid);
+                Editor.sendToPanel('assets.panel', 'assets:context-menu-rename');
             },
         },
 
         {
             label: 'Delete',
             click: function() {
-                var url = Editor.assetdb.uuidToUrl(uuid);
-                Editor.sendToCore('asset-db:delete-assets', [url]);
+                var url = Editor.assetdb.uuidToUrl();
+                Editor.sendToPanel('assets.panel', 'assets:context-menu-delete');
             },
         },
 
@@ -42,8 +42,9 @@ function getContextTemplate ( uuid ) {
         {
             label: Fire.isDarwin ? 'Reveal in Finder' : 'Show in Explorer',
             click: function() {
-                var fspath = Editor.assetdb.uuidToFspath(uuid);
-                Shell.showItemInFolder(fspath);
+                Editor.sendToPanel('assets.panel', 'assets:context-menu-explore');
+                // var fspath = Editor.assetdb.uuidToFspath(uuid);
+                // Shell.showItemInFolder(fspath);
             }
         },
 
@@ -51,8 +52,9 @@ function getContextTemplate ( uuid ) {
             label: Fire.isDarwin ? 'Reveal in Library' : 'Show in Library',
             visible: Editor.isDev,
             click: function() {
-                var fspath = Editor.assetdb._uuid2importPath(uuid);
-                Shell.showItemInFolder(fspath);
+                Editor.sendToPanel('assets.panel', 'assets:context-menu-explore-lib');
+                // var fspath = Editor.assetdb._uuid2importPath(uuid);
+                // Shell.showItemInFolder(fspath);
             }
         },
 
@@ -60,33 +62,31 @@ function getContextTemplate ( uuid ) {
             label: 'Show UUID',
             visible: Editor.isDev,
             click: function() {
-                var url = Editor.assetdb.uuidToUrl(uuid);
-                Editor.info( '%s, %s', uuid, url);
+                Editor.sendToPanel('assets.panel', 'assets:context-menu-show-uuid');
+                // var url = Editor.assetdb.uuidToUrl(uuid);
+                // Editor.info( '%s, %s', uuid, url);
             }
         },
     ];
 }
 
-function getCreateTemplate ( uuid ) {
+function getCreateTemplate ( isContextMenu ) {
     // NOTE: this will prevent menu item pollution
-    var createAssetMenu = Editor.menus['create-asset'].map ( function ( item ) {
-        var cloneItem = {};
-        for ( var k in item ) {
-            if ( k === 'params' ) {
-                cloneItem.params = item.params.slice(0);
-                cloneItem.params.push(uuid);
-                continue;
-            }
-            cloneItem[k] = item[k];
+    var createAssetMenu = JSON.parse(JSON.stringify(Editor.menus['create-asset']));
+    createAssetMenu = Editor.menus['create-asset'].map ( function ( item ) {
+        if ( item.params ) {
+            item.params.push(isContextMenu);
         }
-        return cloneItem;
+        return item;
     });
 
     return [
         {
             label: 'Folder',
             message: 'assets:new-asset',
-            params: ['New Folder', 'folder', uuid]
+            params: [{
+                name: 'New Folder',
+            }, isContextMenu]
         },
 
         {

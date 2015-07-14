@@ -1,5 +1,6 @@
 (function () {
 var Path = require('fire-path');
+var Fs = require('fire-fs');
 
 Editor.registerPanel( 'assets.panel', {
     is: 'editor-assets',
@@ -213,20 +214,23 @@ Editor.registerPanel( 'assets.panel', {
         Editor.Selection.unselect('asset', uuids, true);
     },
 
-    'assets:new-asset': function ( filename, metaType, contextUuid ) {
+    'assets:new-asset': function ( info, isContextMenu ) {
         // get parent url
         var url, el, parentUrl;
-        if ( contextUuid ) {
-            el = this.$.tree._id2el[contextUuid];
-            if ( el.metaType === 'folder' || el.metaType === 'mount' ) {
-                parentUrl = this.$.tree.getUrl(el);
+        if ( isContextMenu ) {
+            var contextUuids = Editor.Selection.contexts('asset');
+            if ( contextUuids.length > 0 ) {
+                var contextUuid = contextUuids[0];
+                el = this.$.tree._id2el[contextUuid];
+                if ( el.metaType === 'folder' || el.metaType === 'mount' ) {
+                    parentUrl = this.$.tree.getUrl(el);
+                }
+                else {
+                    url = this.$.tree.getUrl(el);
+                    parentUrl = Path.dirname(url);
+                }
             }
-            else {
-                url = this.$.tree.getUrl(el);
-                parentUrl = Path.dirname(url);
-            }
-        }
-        else {
+        } else {
             var uuid = Editor.Selection.curSelection('asset');
             if ( uuid.length > 0 ) {
                 el = this.$.tree._id2el[uuid];
@@ -239,21 +243,64 @@ Editor.registerPanel( 'assets.panel', {
                 else {
                     parentUrl = url;
                 }
-            }
-            else {
+            } else {
                 el = Polymer.dom(this.$.tree).firstElementChild;
                 parentUrl = this.$.tree.getUrl(el);
             }
         }
 
         //
-        Editor.assetdb.create( Path.join(parentUrl, filename), null );
+        var data = info.data;
+        if ( info.url ) {
+            data = Fs.readFileSync(Editor.url(info.url));
+        }
+        Editor.assetdb.create( Path.join(parentUrl, info.name), info.data );
     },
 
-    'assets:rename-asset': function ( uuid ) {
-        var el = this.$.tree._id2el[uuid];
-        if ( el ) {
-            this.$.tree.rename(el);
+    'assets:context-menu-rename': function () {
+        var contextUuids = Editor.Selection.contexts('asset');
+        if ( contextUuids.length > 0 ) {
+            var uuid = contextUuids[0];
+            var el = this.$.tree._id2el[uuid];
+            if ( el ) {
+                this.$.tree.rename(el);
+            }
+        }
+    },
+
+    'assets:context-menu-delete': function () {
+        var contextUuids = Editor.Selection.contexts('asset');
+        var urls = contextUuids.map(function (id) {
+            var el = this.$.tree._id2el[id];
+            return this.$.tree.getUrl(el);
+        }.bind(this));
+        Editor.assetdb.delete(urls);
+    },
+
+    'assets:context-menu-explore': function () {
+        var contextUuids = Editor.Selection.contexts('asset');
+        if ( contextUuids.length > 0 ) {
+            var uuid = contextUuids[0];
+            var el = this.$.tree._id2el[uuid];
+            Edtior.asset.explore( this.$.tree.getUrl(el) );
+        }
+    },
+
+    'assets:context-menu-explore-lib': function () {
+        var contextUuids = Editor.Selection.contexts('asset');
+        if ( contextUuids.length > 0 ) {
+            var uuid = contextUuids[0];
+            var el = this.$.tree._id2el[uuid];
+            Edtior.asset.exploreLib( this.$.tree.getUrl(el) );
+        }
+    },
+
+    'assets:context-menu-show-uuid': function () {
+        var contextUuids = Editor.Selection.contexts('asset');
+        if ( contextUuids.length > 0 ) {
+            var uuid = contextUuids[0];
+            var el = this.$.tree._id2el[uuid];
+            Editor.info('%s, %s', uuid, this.$.tree.getUrl(el) );
         }
     },
 

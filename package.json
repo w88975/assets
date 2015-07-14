@@ -49,7 +49,11 @@
         "asset-db:assets-moved",
         "asset-db:assets-deleted",
         "assets:new-asset",
-        "assets:rename-asset"
+        "assets:context-menu-rename",
+        "assets:context-menu-delete",
+        "assets:context-menu-explore",
+        "assets:context-menu-explore-lib",
+        "assets:context-menu-show-uuid"
       ],
       "profiles": {
         "local": {
