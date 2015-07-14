@@ -254,7 +254,7 @@ Editor.registerPanel( 'assets.panel', {
         if ( info.url ) {
             data = Fs.readFileSync(Editor.url(info.url), {encoding:'utf8'});
         }
-        Editor.assetdb.create( Path.join(parentUrl, info.name), info.data );
+        Editor.assetdb.create( Path.join(parentUrl, info.name), data );
     },
 
     'assets:context-menu-rename': function () {
