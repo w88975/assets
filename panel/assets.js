@@ -127,6 +127,10 @@ Editor.registerPanel( 'assets.panel', {
         Editor.assetdb.delete(urls);
     },
 
+    'editor:hint-asset': function ( uuid ) {
+        this.$.tree.hintItemById(uuid);
+    },
+
     'selection:selected': function ( type, ids ) {
         if ( type !== 'asset' )
             return;

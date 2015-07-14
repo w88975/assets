@@ -195,6 +195,15 @@ Polymer({
         newEL.setIcon( metaType );
     },
 
+    hintItemById: function ( uuid ) {
+        this.expand( uuid, true );
+        var itemEL = this._id2el[uuid];
+        if (itemEL) {
+            this.scrollToItem(itemEL);
+            itemEL.hint();
+        }
+    },
+
     _build: function ( data ) {
         console.time('assets-tree._build()');
         data.forEach( function ( entry ) {

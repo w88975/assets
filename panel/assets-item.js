@@ -238,6 +238,16 @@ Editor.registerWidget( 'assets-item', {
                // TODO: this.isFolderAsset
                ;
     },
+
+    hint: function () {
+        var computedStyle = window.getComputedStyle(this.$.bar);
+        this.$.bar.animate([
+            { background: 'white', transform: 'scale(1.2)' },
+            { background: computedStyle.backgroundColor, transform: 'scale(1)' }
+        ], {
+            duration: 1000
+        });
+    },
 });
 
 })();
