@@ -252,7 +252,7 @@ Editor.registerPanel( 'assets.panel', {
         //
         var data = info.data;
         if ( info.url ) {
-            data = Fs.readFileSync(Editor.url(info.url));
+            data = Fs.readFileSync(Editor.url(info.url), {encoding:'utf8'});
         }
         Editor.assetdb.create( Path.join(parentUrl, info.name), data );
     },
