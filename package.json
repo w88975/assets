@@ -37,7 +37,7 @@
           "enter": "renameCurrentSelected",
           "f2": "renameCurrentSelected",
           "command+backspace": "deleteCurrentSelected",
-          "ctrl+backspace": "deleteCurrentSelected"
+          "del": "deleteCurrentSelected"
         }
       },
       "messages": [
