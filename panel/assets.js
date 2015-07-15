@@ -168,15 +168,34 @@ Editor.registerPanel( 'assets.panel', {
     },
 
     'asset-db:assets-created': function ( results ) {
-        results.forEach( function ( result ) {
-            this.$.tree.addNewItemById(
+        var self = this;
+
+        results.forEach(function ( result ) {
+            self.$.tree.addNewItemById(
                 result.uuid,
                 result.parentUuid,
                 result.name,
                 result.extname,
                 result.type
             );
-        }.bind(this) );
+        });
+
+        // flash added
+        results.forEach(function ( result ) {
+            var foundParentInResults = results.some(function (result2) {
+                return result2.uuid === result.parentUuid;
+            });
+
+            if ( !foundParentInResults ) {
+                requestAnimationFrame( function () {
+                    var itemEL = self.$.tree._id2el[result.uuid];
+                    itemEL.hint();
+
+                    var parentEL = self.$.tree._id2el[result.parentUuid];
+                    parentEL.folded = false;
+                });
+            }
+        });
     },
 
     'asset-db:assets-moved': function ( results ) {
@@ -189,12 +208,21 @@ Editor.registerPanel( 'assets.panel', {
             }
             return 0;
         });
+        var self = this;
 
-        filterResults.forEach( function ( result ) {
-            this.$.tree.moveItemById( result.uuid,
+        filterResults.forEach(function ( result ) {
+            self.$.tree.moveItemById( result.uuid,
                                       result.parentUuid,
                                       Path.basenameNoExt(result.destPath) );
-        }.bind(this) );
+        });
+
+        // flash moved
+        filterResults.forEach(function ( result ) {
+            requestAnimationFrame( function () {
+                var itemEL = self.$.tree._id2el[result.uuid];
+                itemEL.hint();
+            });
+        });
     },
 
     'asset-db:assets-deleted': function ( results ) {
@@ -216,6 +244,11 @@ Editor.registerPanel( 'assets.panel', {
             return result.uuid;
         });
         Editor.Selection.unselect('asset', uuids, true);
+    },
+
+    'asset-db:asset-changed': function ( type, uuid ) {
+        var itemEL = this.$.tree._id2el[uuid];
+        itemEL.hint();
     },
 
     'assets:new-asset': function ( info, isContextMenu ) {

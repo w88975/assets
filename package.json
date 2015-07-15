@@ -49,6 +49,7 @@
         "asset-db:assets-created",
         "asset-db:assets-moved",
         "asset-db:assets-deleted",
+        "asset-db:asset-changed",
         "assets:new-asset",
         "assets:context-menu-rename",
         "assets:context-menu-delete",
