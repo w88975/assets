@@ -353,7 +353,7 @@ Editor.registerPanel( 'assets.panel', {
         var uuid = event.detail.uuid;
         Editor.assetdb.queryInfoByUuid( uuid, function ( info ) {
             var metaType = info['meta-type'];
-            if ( metaType === 'javascript' ) {
+            if ( metaType === 'javascript' || metaType === 'coffeescript' ) {
                 Editor.sendToCore('code-editor:open-by-uuid', uuid);
             }
             else if ( metaType === 'scene' ) {
