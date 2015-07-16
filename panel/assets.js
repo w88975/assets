@@ -246,8 +246,8 @@ Editor.registerPanel( 'assets.panel', {
         Editor.Selection.unselect('asset', uuids, true);
     },
 
-    'asset-db:asset-changed': function ( type, uuid ) {
-        var itemEL = this.$.tree._id2el[uuid];
+    'asset-db:asset-changed': function ( result ) {
+        var itemEL = this.$.tree._id2el[result.uuid];
         itemEL.hint();
     },
 
