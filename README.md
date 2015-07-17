@@ -8,7 +8,7 @@ Clone github
 
 Step 1: Initialize asset-db
 
-```
+```javascript
 var AssetDB = require('../asset-db');
 Editor.assetdb = new AssetDB({
     'cwd': 'your/project/path',
@@ -18,7 +18,7 @@ Editor.assetdb = new AssetDB({
 
 Step 2: Register Panel Window and Selection
 
-```
+```javascript
 // register panel window
 Editor.Panel.templateUrl = 'app://your/window.html';
 
@@ -28,7 +28,7 @@ Editor.Selection.register('asset');
 
 Step 3: Mount and Open Window
 
-```
+```javascript
 Editor.assetdb.mount('your/mounting/path', 'assets', function () {
     Editor.assetdb.init(function () {
         // open your window...
@@ -38,7 +38,7 @@ Editor.assetdb.mount('your/mounting/path', 'assets', function () {
 
 **In Page Level**
 
-```
+```html
 <head>
     <script type="text/javascript" src="editor-framework://page/page-init.js"></script>
     <link rel="import" href="editor-framework://page/ui/ui.html">
