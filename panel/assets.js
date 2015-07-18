@@ -271,8 +271,8 @@ Editor.registerPanel( 'assets.panel', {
                 parentUrl = this.$.tree.getUrl(el);
             }
         } else {
-            var uuid = Editor.Selection.curSelection('asset');
-            if ( uuid.length > 0 ) {
+            var uuid = Editor.Selection.curActivate('asset');
+            if ( uuid ) {
                 el = this.$.tree._id2el[uuid];
                 url = this.$.tree.getUrl(el);
 
