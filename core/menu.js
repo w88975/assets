@@ -1,4 +1,5 @@
 var Shell = require('shell');
+var Fs = require('fire-fs');
 
 function getContextTemplate () {
     return [
@@ -15,15 +16,20 @@ function getContextTemplate () {
         {
             label: 'Rename',
             click: function() {
-                Editor.sendToPanel('assets.panel', 'assets:context-menu-rename');
+                var contextUuids = Editor.Selection.contexts('asset');
+                if ( contextUuids.length > 0 ) {
+                    Editor.sendToPanel('assets.panel', 'assets:rename', contextUuids[0]);
+                }
             },
         },
 
         {
             label: 'Delete',
             click: function() {
-                var url = Editor.assetdb.uuidToUrl();
-                Editor.sendToPanel('assets.panel', 'assets:context-menu-delete');
+                var contextUuids = Editor.Selection.contexts('asset');
+                if ( contextUuids.length > 0 ) {
+                    Editor.sendToPanel('assets.panel', 'assets:delete', contextUuids);
+                }
             },
         },
 
@@ -42,9 +48,17 @@ function getContextTemplate () {
         {
             label: Fire.isDarwin ? 'Reveal in Finder' : 'Show in Explorer',
             click: function() {
-                Editor.sendToPanel('assets.panel', 'assets:context-menu-explore');
-                // var fspath = Editor.assetdb.uuidToFspath(uuid);
-                // Shell.showItemInFolder(fspath);
+                var contextUuids = Editor.Selection.contexts('asset');
+                if ( contextUuids.length > 0 ) {
+                    var uuid = contextUuids[0];
+                    var fspath = Editor.assetdb.uuidToFspath(uuid);
+                    if ( Fs.existsSync(fspath) ) {
+                        Shell.showItemInFolder(fspath);
+                    }
+                    else {
+                        Editor.failed( 'Can not found the asset %s', Editor.assetdb.uuidToUrl(uuid) );
+                    }
+                }
             }
         },
 
@@ -52,9 +66,17 @@ function getContextTemplate () {
             label: Fire.isDarwin ? 'Reveal in Library' : 'Show in Library',
             visible: Editor.isDev,
             click: function() {
-                Editor.sendToPanel('assets.panel', 'assets:context-menu-explore-lib');
-                // var fspath = Editor.assetdb._uuid2importPath(uuid);
-                // Shell.showItemInFolder(fspath);
+                var contextUuids = Editor.Selection.contexts('asset');
+                if ( contextUuids.length > 0 ) {
+                    var uuid = contextUuids[0];
+                    var fspath = Editor.assetdb._uuid2importPath(uuid);
+                    if ( Fs.existsSync(fspath) ) {
+                        Shell.showItemInFolder(fspath);
+                    }
+                    else {
+                        Editor.failed( 'The asset %s is not exists in library', Editor.assetdb.uuidToUrl(uuid) );
+                    }
+                }
             }
         },
 
@@ -62,23 +84,30 @@ function getContextTemplate () {
             label: 'Show UUID',
             visible: Editor.isDev,
             click: function() {
-                Editor.sendToPanel('assets.panel', 'assets:context-menu-show-uuid');
-                // var url = Editor.assetdb.uuidToUrl(uuid);
-                // Editor.info( '%s, %s', uuid, url);
+                var contextUuids = Editor.Selection.contexts('asset');
+                if ( contextUuids.length > 0 ) {
+                    var uuid = contextUuids[0];
+                    var url = Editor.assetdb.uuidToUrl(uuid);
+                    Editor.info('%s, %s', uuid, url );
+                }
             }
         },
     ];
 }
 
 function getCreateTemplate ( isContextMenu ) {
+    var menuTmpl = Editor.menus['create-asset'];
+
     // NOTE: this will prevent menu item pollution
-    var createAssetMenu = JSON.parse(JSON.stringify(Editor.menus['create-asset']));
-    createAssetMenu = Editor.menus['create-asset'].map ( function ( item ) {
-        if ( item.params ) {
-            item.params.push(isContextMenu);
-        }
-        return item;
-    });
+    if ( menuTmpl ) {
+        menuTmpl = JSON.parse(JSON.stringify(menuTmpl));
+        menuTmpl = menuTmpl.map ( function ( item ) {
+            if ( item.params ) {
+                item.params.push(isContextMenu);
+            }
+            return item;
+        });
+    }
 
     return [
         {
@@ -93,7 +122,7 @@ function getCreateTemplate ( isContextMenu ) {
             // ---------------------------------------------
             type: 'separator'
         },
-    ].concat(createAssetMenu);
+    ].concat(menuTmpl);
 }
 
 module.exports = {

@@ -297,51 +297,19 @@ Editor.registerPanel( 'assets.panel', {
         Editor.assetdb.create( Path.join(parentUrl, info.name), data );
     },
 
-    'assets:context-menu-rename': function () {
-        var contextUuids = Editor.Selection.contexts('asset');
-        if ( contextUuids.length > 0 ) {
-            var uuid = contextUuids[0];
-            var el = this.$.tree._id2el[uuid];
-            if ( el ) {
-                this.$.tree.rename(el);
-            }
+    'assets:rename': function ( uuid ) {
+        var el = this.$.tree._id2el[uuid];
+        if ( el ) {
+            this.$.tree.rename(el);
         }
     },
 
-    'assets:context-menu-delete': function () {
-        var contextUuids = Editor.Selection.contexts('asset');
-        var urls = contextUuids.map(function (id) {
+    'assets:delete': function ( uuids ) {
+        var urls = uuids.map(function (id) {
             var el = this.$.tree._id2el[id];
             return this.$.tree.getUrl(el);
         }.bind(this));
         Editor.assetdb.delete(urls);
-    },
-
-    'assets:context-menu-explore': function () {
-        var contextUuids = Editor.Selection.contexts('asset');
-        if ( contextUuids.length > 0 ) {
-            var uuid = contextUuids[0];
-            var el = this.$.tree._id2el[uuid];
-            Editor.assetdb.explore( this.$.tree.getUrl(el) );
-        }
-    },
-
-    'assets:context-menu-explore-lib': function () {
-        var contextUuids = Editor.Selection.contexts('asset');
-        if ( contextUuids.length > 0 ) {
-            var uuid = contextUuids[0];
-            var el = this.$.tree._id2el[uuid];
-            Editor.assetdb.exploreLib( this.$.tree.getUrl(el) );
-        }
-    },
-
-    'assets:context-menu-show-uuid': function () {
-        var contextUuids = Editor.Selection.contexts('asset');
-        if ( contextUuids.length > 0 ) {
-            var uuid = contextUuids[0];
-            var el = this.$.tree._id2el[uuid];
-            Editor.info('%s, %s', uuid, this.$.tree.getUrl(el) );
-        }
     },
 
     _onAssetsTreeReady: function () {

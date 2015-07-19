@@ -15,7 +15,7 @@ module.exports = {
     'assets:popup-create-menu': function (event, x, y) {
         var template = Menu.getCreateTemplate();
         var editorMenu = new Editor.Menu(template, event.sender);
-        // editorMenu.add( '', Editor.menus['create-asset'] );
+        // TODO: editorMenu.add( '', Editor.menus['create-asset'] );
 
         x = Math.floor(x);
         y = Math.floor(y);
@@ -24,12 +24,9 @@ module.exports = {
     },
 
     'assets:popup-context-menu': function (event, x, y) {
-        // // NOTE: without this, we will create new assets while watching ON
-        // BrowserWindow.fromWebContents(event.sender).focus();
-
         var template = Menu.getContextTemplate();
         var editorMenu = new Editor.Menu(template, event.sender);
-        // editorMenu.add( '', Editor.menus['create-asset'] );
+        // TODO: editorMenu.add( '', Editor.menus['create-asset'] );
 
         x = Math.floor(x);
         y = Math.floor(y);
