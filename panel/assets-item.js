@@ -239,13 +239,16 @@ Editor.registerWidget( 'assets-item', {
                ;
     },
 
-    hint: function () {
+    hint: function ( color, duration ) {
+        color = color || 'white';
+        duration = duration || 1000;
+
         var computedStyle = window.getComputedStyle(this.$.bar);
         this.$.bar.animate([
-            { background: 'white', transform: 'scale(1.2)' },
+            { background: color, transform: 'scale(1.2)' },
             { background: computedStyle.backgroundColor, transform: 'scale(1)' }
         ], {
-            duration: 1000
+            duration: duration
         });
     },
 });
