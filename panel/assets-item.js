@@ -122,9 +122,19 @@ Editor.registerWidget( 'assets-item', {
         }
 
         var metaCtor = Editor.metas[type];
-        if ( metaCtor ) {
+        if ( metaCtor && metaCtor['meta-icon'] ) {
             this.$.icon.src = metaCtor['meta-icon'];
+            return;
         }
+
+        // fallback default icon
+        if ( type === 'folder' ) {
+            this.$.icon.src = 'packages://assets/static/folder.png';
+            return;
+        }
+
+        this.$.icon.src = 'packages://assets/static/asset.png';
+        return;
     },
 
     //
