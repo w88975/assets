@@ -128,7 +128,7 @@ Editor.registerWidget( 'assets-item', {
         }
 
         // fallback to default icon
-        this.$.icon.src = 'packages://assets/static/icon' + type + '.png';
+        this.$.icon.src = 'packages://assets/static/icon/' + type + '.png';
     },
 
     //
