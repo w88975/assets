@@ -127,14 +127,8 @@ Editor.registerWidget( 'assets-item', {
             return;
         }
 
-        // fallback default icon
-        if ( type === 'folder' ) {
-            this.$.icon.src = 'packages://assets/static/folder.png';
-            return;
-        }
-
-        this.$.icon.src = 'packages://assets/static/asset.png';
-        return;
+        // fallback to default icon
+        this.$.icon.src = 'packages://assets/static/icon' + type + '.png';
     },
 
     //
