@@ -596,12 +596,13 @@ Polymer({
 
     _cancelHighligting: function () {
         this.$.highlightBorder.style.display = 'none';
+        this.$.highlightBorder.removeAttribute('invalid');
+
         this.$.insertLine.style.display = 'none';
 
         if (this._curInsertParentEL) {
             this._curInsertParentEL.highlighted = false;
             this._curInsertParentEL.invalid = false;
-            this.$.highlightBorder.removeAttribute('invalid');
         }
 
         this._conflictElements.forEach(function ( el ) {
