@@ -189,7 +189,10 @@ Polymer({
         var ctor = Editor.widgets['assets-item'];
         var newEL = new ctor();
 
-        this.addItem( parentEL, newEL, name, uuid );
+        this.addItem( parentEL, newEL, {
+            id: uuid,
+            name: name,
+        });
         newEL.metaType = metaType;
         newEL.extname = extname;
         newEL.setIcon( metaType );
@@ -208,7 +211,10 @@ Polymer({
         console.time('assets-tree._build()');
         data.forEach( function ( entry ) {
             var newEL = this._newEntryRecursively(entry);
-            this.addItem( this, newEL, entry.name, entry.uuid );
+            this.addItem( this, newEL, {
+                id: entry.uuid,
+                name: entry.name,
+            });
             newEL.metaType = entry.type;
             newEL.extname = entry.extname;
             newEL.setIcon( entry.type );
@@ -232,7 +238,10 @@ Polymer({
         if ( entry.children ) {
             entry.children.forEach( function ( childEntry ) {
                 var childEL = this._newEntryRecursively(childEntry);
-                this.addItem( el, childEL, childEntry.name, childEntry.uuid );
+                this.addItem( el, childEL, {
+                    id: childEntry.uuid,
+                    name: childEntry.name,
+                } );
                 childEL.metaType = childEntry.type;
                 childEL.extname = childEntry.extname;
                 childEL.setIcon( childEntry.type );
