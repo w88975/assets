@@ -493,7 +493,7 @@ Polymer({
 
                     if ( srcEL.contains(targetEL) === false ) {
                         var srcUrl = this.getUrl(srcEL);
-                        Editor.assetdb.move( srcUrl, destUrl );
+                        Editor.assetdb.move( srcUrl, Url.join(destUrl, Url.basename(srcUrl) ) );
                     }
                 }
             }
