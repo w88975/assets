@@ -174,8 +174,8 @@ Editor.registerPanel( 'assets.panel', {
             self.$.tree.addNewItemById(
                 result.uuid,
                 result.parentUuid,
-                result.name,
-                result.extname,
+                Path.basenameNoExt(result.path),
+                Path.extname(result.path),
                 result.type
             );
         });
