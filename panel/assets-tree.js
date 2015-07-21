@@ -214,12 +214,11 @@ Polymer({
             this.addItem( this, newEL, {
                 id: entry.uuid,
                 name: entry.name,
+                folded: false,
             });
             newEL.metaType = entry.type;
             newEL.extname = entry.extname;
             newEL.setIcon( entry.type );
-
-            newEL.folded = false;
         }.bind(this));
         console.timeEnd('assets-tree._build()');
 
