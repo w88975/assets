@@ -325,7 +325,7 @@ Editor.registerPanel( 'assets.panel', {
                 Editor.sendToCore('code-editor:open-by-uuid', uuid);
             }
             else if ( metaType === 'scene' ) {
-                Editor.sendToPanel('scene.panel', 'scene:open-scene-by-uuid', uuid);
+                Editor.sendToCore('scene:open-by-uuid', uuid);
             }
         }.bind(this));
     },
