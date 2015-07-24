@@ -51,6 +51,7 @@
         "asset-db:assets-moved",
         "asset-db:assets-deleted",
         "asset-db:asset-changed",
+        "asset-db:asset-uuid-changed",
         "assets:new-asset",
         "assets:rename",
         "assets:delete"

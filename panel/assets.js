@@ -251,6 +251,12 @@ Editor.registerPanel( 'assets.panel', {
         itemEL.hint();
     },
 
+    'asset-db:asset-uuid-changed': function ( result ) {
+        var itemEL = this.$.tree._id2el[result.oldUuid];
+        this.$.tree.updateItemID(itemEL, result.uuid);
+        itemEL.hint();
+    },
+
     'assets:new-asset': function ( info, isContextMenu ) {
         // get parent url
         var url, el, parentUrl;
