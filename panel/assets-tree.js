@@ -146,14 +146,14 @@ Polymer({
     },
 
     getUrl: function(element) {
-        if (element.metaType === 'mount') {
+        if (element.assetType === 'mount') {
             return element.name + '://';
         }
 
         var url = element.name + element.extname;
         var parentEL = Polymer.dom(element).parentNode;
         while (parentEL instanceof Editor.widgets['assets-item']) {
-            if (parentEL.metaType === 'mount') {
+            if (parentEL.assetType === 'mount') {
                 url = parentEL.name + '://' + url;
                 break;
             } else {
@@ -184,7 +184,7 @@ Polymer({
         }
     },
 
-    addNewItemById: function ( uuid, parentID, name, extname, metaType ) {
+    addNewItemById: function ( uuid, parentID, name, extname, assetType ) {
         var parentEL = this._id2el[parentID];
         var ctor = Editor.widgets['assets-item'];
         var newEL = new ctor();
@@ -193,9 +193,9 @@ Polymer({
             id: uuid,
             name: name,
         });
-        newEL.metaType = metaType;
+        newEL.assetType = assetType;
         newEL.extname = extname;
-        newEL.setIcon( metaType );
+        newEL.setIcon( assetType );
     },
 
     hintItemById: function ( uuid ) {
@@ -216,7 +216,7 @@ Polymer({
                 name: entry.name,
                 folded: false,
             });
-            newEL.metaType = entry.type;
+            newEL.assetType = entry.type;
             newEL.extname = entry.extname;
             newEL.setIcon( entry.type );
         }.bind(this));
@@ -241,7 +241,7 @@ Polymer({
                     id: childEntry.uuid,
                     name: childEntry.name,
                 } );
-                childEL.metaType = childEntry.type;
+                childEL.assetType = childEntry.type;
                 childEL.extname = childEntry.extname;
                 childEL.setIcon( childEntry.type );
             }.bind(this) );

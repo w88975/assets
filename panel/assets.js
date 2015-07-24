@@ -259,7 +259,7 @@ Editor.registerPanel( 'assets.panel', {
             if ( contextUuids.length > 0 ) {
                 var contextUuid = contextUuids[0];
                 el = this.$.tree._id2el[contextUuid];
-                if ( el.metaType === 'folder' || el.metaType === 'mount' ) {
+                if ( el.assetType === 'folder' || el.assetType === 'mount' ) {
                     parentUrl = this.$.tree.getUrl(el);
                 }
                 else {
@@ -320,11 +320,11 @@ Editor.registerPanel( 'assets.panel', {
     _onOpenAsset: function ( event ) {
         var uuid = event.detail.uuid;
         Editor.assetdb.queryInfoByUuid( uuid, function ( info ) {
-            var metaType = info['meta-type'];
-            if ( metaType === 'javascript' || metaType === 'coffeescript' ) {
+            var assetType = info.type;
+            if ( assetType === 'javascript' || assetType === 'coffeescript' ) {
                 Editor.sendToCore('code-editor:open-by-uuid', uuid);
             }
-            else if ( metaType === 'scene' ) {
+            else if ( assetType === 'scene' ) {
                 Editor.sendToCore('scene:open-by-uuid', uuid);
             }
         }.bind(this));

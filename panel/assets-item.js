@@ -79,7 +79,7 @@ Editor.registerWidget( 'assets-item', {
             value: '',
         },
 
-        metaType: {
+        assetType: {
             type: String,
             value: '',
         },
@@ -237,8 +237,8 @@ Editor.registerWidget( 'assets-item', {
     },
 
     canAddChild: function () {
-        return this.metaType === 'folder' ||
-               this.metaType === 'mount'
+        return this.assetType === 'folder' ||
+               this.assetType === 'mount'
                // TODO: this.isFolderAsset
                ;
     },
