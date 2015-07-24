@@ -33,13 +33,6 @@ function getContextTemplate () {
             },
         },
 
-        //{
-        //    label: 'Reimport',
-        //    click: function() {
-        //        Editor.info('TODO - Reimport');
-        //    }
-        //},
-
         {
             // ---------------------------------------------
             type: 'separator'
@@ -91,6 +84,38 @@ function getContextTemplate () {
                     Editor.info('%s, %s', uuid, url );
                 }
             }
+        },
+
+        {
+            // ---------------------------------------------
+            type: 'separator'
+        },
+
+        {
+           label: 'Refresh',
+           click: function() {
+                var contextUuids = Editor.Selection.contexts('asset');
+                if ( contextUuids.length > 0 ) {
+                    var urls = contextUuids.map( function (uuid) {
+                        return Editor.assetdb.uuidToUrl(uuid);
+                    });
+                    Editor.assetdb.watchOFF();
+                    urls.forEach( function (url) {
+                        // import asset
+                        Editor.assetdb.refresh ( url, function ( err, results ) {
+                            if ( err ) {
+                                Editor.assetdb.error('Failed to import asset %s, %s', url, err.stack);
+                                return;
+                            }
+
+                            Editor.assetdb._handleRefreshResults(results);
+                        });
+                    });
+                    if ( !Editor.focused ) {
+                        Editor.assetdb.watchON();
+                    }
+                }
+           }
         },
     ];
 }
