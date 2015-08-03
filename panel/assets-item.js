@@ -122,8 +122,8 @@ Editor.registerWidget( 'assets-item', {
         }
 
         var metaCtor = Editor.metas[type];
-        if ( metaCtor && metaCtor['meta-icon'] ) {
-            this.$.icon.src = metaCtor['meta-icon'];
+        if ( metaCtor && metaCtor['asset-icon'] ) {
+            this.$.icon.src = metaCtor['asset-icon'];
             return;
         }
 
