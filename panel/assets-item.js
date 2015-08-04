@@ -117,7 +117,7 @@ Editor.registerWidget( 'assets-item', {
     //
     setIcon: function ( type ) {
         if ( type === 'texture' ) {
-            this.$.icon.src = 'uuid://' + this._userId + '?thumbnail';
+            this.$.icon.src = 'thumbnail://' + this._userId;
             return;
         }
 
