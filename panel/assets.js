@@ -353,16 +353,16 @@ Editor.registerPanel( 'assets.panel', {
     },
 
     _onFilterTextChanged: function () {
-        this.$.search.filter(this.filterText);
+        this.$.searchResult.filter(this.filterText);
 
         if (this.filterText) {
-            this.$.search.hidden = false;
+            this.$.searchResult.hidden = false;
             this.$.tree.hidden = true;
             return;
         }
 
-        this.$.search.hidden = true;
-        this.$.search.clear();
+        this.$.searchResult.hidden = true;
+        this.$.searchResult.clear();
         this.$.tree.hidden = false;
     },
 });
