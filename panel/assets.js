@@ -10,6 +10,12 @@ Editor.registerPanel( 'assets.panel', {
             type: String,
             value: '',
         },
+
+        filterText: {
+            type: String,
+            value: '',
+            observer: '_onFilterTextChanged'
+        },
     },
 
     listeners: {
@@ -344,7 +350,21 @@ Editor.registerPanel( 'assets.panel', {
     _onCreateClick: function ( event ) {
         var rect = this.$.createBtn.getBoundingClientRect();
         Editor.sendToCore('assets:popup-create-menu', rect.left, rect.bottom + 5, Editor.requireIpcEvent);
-    }
+    },
+
+    _onFilterTextChanged: function () {
+        this.$.search.filter(this.filterText);
+
+        if (this.filterText) {
+            this.$.search.hidden = false;
+            this.$.tree.hidden = true;
+            return;
+        }
+
+        this.$.search.hidden = true;
+        this.$.search.clear();
+        this.$.tree.hidden = false;
+    },
 });
 
 })();
