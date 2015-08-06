@@ -57,26 +57,29 @@
             }
         },
 
-        showLoaderAfter: function ( timeout ) {
-            if ( this.$.loader.hidden === false )
+        showLoaderAfter: function(timeout) {
+            if (this.$.loader.hidden === false)
                 return;
 
-            if ( this._loaderID )
+            if (this._loaderID)
                 return;
 
-            this._loaderID = this.async( function () {
+            this._loaderID = this.async(function() {
                 this.$.loader.hidden = false;
                 this._loaderID = null;
             }, timeout);
         },
 
-        hideLoader: function () {
+        hideLoader: function() {
             this.cancelAsync(this._loaderID);
             this._loaderID = null;
             this.$.loader.hidden = true;
         },
 
         filter: function(filterText) {
+            if (!filterText) {
+                return;
+            }
             this.cancelAsync(this._asyncID);
             this._asyncID = null;
 
@@ -84,28 +87,26 @@
 
             var id = this.async(function() {
                 this.hideLoader();
-                this.clear();
                 Editor.assetdb.queryAssets('assets://**/*', null, function(results) {
-                    if ( id !== this._asyncID )
+                    this.clear();
+                    if (id !== this._asyncID)
                         return;
-
-                    this.assets = results;
-
                     var text = filterText.toLowerCase();
+                    results.forEach(function(info) {
 
-                    for (var i in this.assets) {
-                        var name = Path.basename(this.assets[i].path);
+                        var name = Path.basename(info.path);
                         if (name.toLowerCase().indexOf(text) > -1) {
                             var ctor = Editor.widgets['assets-item'];
                             var newEL = new ctor();
+
                             this.addItem(this, newEL, {
-                                id: this.assets[i].uuid,
+                                id: info.uuid,
                                 name: name,
                                 folded: false,
                             });
-                            newEL.setIcon(this.assets[i].type);
+                            newEL.setIcon(info.type);
                         }
-                    }
+                    }.bind(this));
 
                     var selection = Editor.Selection.curSelection('asset');
                     selection.forEach(function(id) {
