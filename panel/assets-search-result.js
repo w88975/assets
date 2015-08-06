@@ -25,6 +25,9 @@
         },
 
         ready: function() {
+            this._shiftStartElement = null;
+            this._conflictElements = [];
+
             this._initFocusable(this);
             this._initDroppable(this);
         },
@@ -33,14 +36,42 @@
             event.stopPropagation();
 
             var targetEL = event.target;
+            var shiftStartEL = this._shiftStartElement;
+            this._shiftStartElement = null;
 
-            if (event.detail.toggle) {
+            if (event.detail.shift) {
+                if (shiftStartEL === null) {
+                    shiftStartEL = this._activeElement;
+                }
+
+                this._shiftStartElement = shiftStartEL;
+
+                var el = this._shiftStartElement;
+                var userIds = [];
+
+                if (shiftStartEL !== targetEL) {
+                    if (this._shiftStartElement.offsetTop < targetEL.offsetTop) {
+                        while (el !== targetEL) {
+                            userIds.push(el._userId);
+                            el = this.nextItem(el);
+                        }
+                    } else {
+                        while (el !== targetEL) {
+                            userIds.push(el._userId);
+                            el = this.prevItem(el);
+                        }
+                    }
+                }
+                userIds.push(targetEL._userId);
+                Editor.Selection.select('asset', userIds, true, false);
+            } else if (event.detail.toggle) {
                 if (targetEL.selected) {
                     Editor.Selection.unselect('asset', targetEL._userId, false);
                 } else {
                     Editor.Selection.select('asset', targetEL._userId, false, false);
                 }
             } else {
+                // if target already selected, do not unselect others
                 if (!targetEL.selected) {
                     Editor.Selection.select('asset', targetEL._userId, true, false);
                 }
@@ -50,7 +81,9 @@
         _onItemSelect: function(event) {
             event.stopPropagation();
 
-            if (event.detail.toggle) {
+            if (event.detail.shift) {
+                Editor.Selection.confirm();
+            } else if (event.detail.toggle) {
                 Editor.Selection.confirm();
             } else {
                 Editor.Selection.select('asset', event.target._userId, true);
