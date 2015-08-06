@@ -27,8 +27,6 @@
         ready: function() {
             this._initFocusable(this);
             this._initDroppable(this);
-            this.timeout = null;
-            this.onInput = false;
         },
 
         _onItemSelecting: function(event) {
@@ -59,15 +57,40 @@
             }
         },
 
-        filter: function(filterText) {
-            clearTimeout(this.timeout);
-            this.onInput = true;
-            this.timeout = setTimeout(function() {
-                this.onInput = false;
+        showLoaderAfter: function ( timeout ) {
+            if ( this.$.loader.hidden === false )
+                return;
 
+            if ( this._loaderID )
+                return;
+
+            this._loaderID = this.async( function () {
+                this.$.loader.hidden = false;
+                this._loaderID = null;
+            }, timeout);
+        },
+
+        hideLoader: function () {
+            this.cancelAsync(this._loaderID);
+            this._loaderID = null;
+            this.$.loader.hidden = true;
+        },
+
+        filter: function(filterText) {
+            this.cancelAsync(this._asyncID);
+            this._asyncID = null;
+
+            this.showLoaderAfter(50);
+
+            var id = this.async(function() {
+                this.hideLoader();
+                this.clear();
                 Editor.assetdb.queryAssets('assets://**/*', null, function(results) {
+                    if ( id !== this._asyncID )
+                        return;
+
                     this.assets = results;
-                    this.clear();
+
                     var text = filterText.toLowerCase();
 
                     for (var i in this.assets) {
@@ -91,7 +114,9 @@
                     this.activeItemById(Editor.Selection.curActivate('asset'));
                 }.bind(this));
 
-            }.bind(this), 50);
+            }, 50);
+
+            this._asyncID = id;
         },
     });
 })();

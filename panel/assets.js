@@ -360,8 +360,9 @@ Editor.registerPanel( 'assets.panel', {
             this.$.tree.hidden = true;
             return;
         }
-        
+
         this.$.search.hidden = true;
+        this.$.search.clear();
         this.$.tree.hidden = false;
     },
 });
