@@ -62,13 +62,14 @@ function getContextTemplate () {
                 var contextUuids = Editor.Selection.contexts('asset');
                 if ( contextUuids.length > 0 ) {
                     var uuid = contextUuids[0];
-                    var fspath = Editor.assetdb._uuid2importPath(uuid);
-                    if ( Fs.existsSync(fspath) ) {
-                        Shell.showItemInFolder(fspath);
-                    }
-                    else {
-                        Editor.failed( 'The asset %s is not exists in library', Editor.assetdb.uuidToUrl(uuid) );
-                    }
+                    var path = Editor.assetdb._uuidToImportPathNoExt(uuid);
+                    // TODO: globby
+                    // if ( Fs.existsSync(fspath) ) {
+                    //     Shell.showItemInFolder(fspath);
+                    // }
+                    // else {
+                    //     Editor.failed( 'The asset %s is not exists in library', Editor.assetdb.uuidToUrl(uuid) );
+                    // }
                 }
             }
         },

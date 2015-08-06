@@ -365,6 +365,19 @@ Editor.registerPanel( 'assets.panel', {
         this.$.searchResult.clear();
         this.$.tree.hidden = false;
     },
+
+    _onSearchConfirm: function ( event ) {
+        if ( event.detail.confirmByEnter ) {
+            this.async( function () {
+                if ( !this.$.searchResult.hidden ) {
+                    this.$.searchResult.setFocus();
+                    return;
+                }
+
+                this.$.tree.setFocus();
+            });
+        }
+    },
 });
 
 })();

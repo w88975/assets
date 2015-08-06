@@ -10,7 +10,14 @@
             <editor-button id="createBtn" on-click="_onCreateClick">
                 <i class="fa fa-plus"></i>
             </editor-button>
-            <editor-input id="search" class="flex-1" input-value="{{filterText}}" placeholder="Search..."></editor-input>
+            <editor-input
+                id="search"
+                class="flex-1"
+                input-value="{{filterText}}"
+                placeholder="Search..."
+                on-confirm="_onSearchConfirm"
+            >
+            </editor-input>
         </editor-toolbar>
         <assets-tree id="tree" class="flex-1"></assets-tree>
         <assets-search-result id="searchResult" class="flex-1" hidden></assets-search-result>
