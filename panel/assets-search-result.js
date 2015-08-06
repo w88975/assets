@@ -127,7 +127,7 @@
                     var text = filterText.toLowerCase();
                     results.forEach(function(info) {
 
-                        var name = Path.basename(info.path);
+                        var name = Path.basenameNoExt(info.path);
                         if (name.toLowerCase().indexOf(text) > -1) {
                             var ctor = Editor.widgets['assets-item'];
                             var newEL = new ctor();
