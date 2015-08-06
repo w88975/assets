@@ -1,5 +1,6 @@
 var Shell = require('shell');
 var Fs = require('fire-fs');
+var Globby = require('globby');
 
 function getContextTemplate () {
     return [
@@ -62,14 +63,26 @@ function getContextTemplate () {
                 var contextUuids = Editor.Selection.contexts('asset');
                 if ( contextUuids.length > 0 ) {
                     var uuid = contextUuids[0];
-                    var path = Editor.assetdb._uuidToImportPathNoExt(uuid);
-                    // TODO: globby
-                    // if ( Fs.existsSync(fspath) ) {
-                    //     Shell.showItemInFolder(fspath);
-                    // }
-                    // else {
-                    //     Editor.failed( 'The asset %s is not exists in library', Editor.assetdb.uuidToUrl(uuid) );
-                    // }
+                    var meta = Editor.assetdb.loadMeta(uuid);
+
+                    if ( meta.useRawfile() ) {
+                        Editor.info( 'This is a raw asset, it does not exists in library' );
+                        return;
+                    }
+
+                    var dests = meta.dests(Editor.assetdb);
+                    if ( !dests.length ) {
+                        Editor.failed( 'The asset %s is not exists in library', Editor.assetdb.uuidToUrl(uuid) );
+                        return;
+                    }
+
+                    var fspath = dests[0];
+                    if ( !Fs.existsSync(fspath) ) {
+                        Editor.failed( 'The asset %s is not exists in library', Editor.assetdb.uuidToUrl(uuid) );
+                        return;
+                    }
+
+                    Shell.showItemInFolder(fspath);
                 }
             }
         },
