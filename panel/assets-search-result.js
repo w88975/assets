@@ -40,14 +40,14 @@
             this._initDroppable(this);
         },
 
-        clearSelection: function () {
+        clearSelection: function() {
             Editor.Selection.clear('asset');
             this._activeElement = null;
             this._shiftStartElement = null;
         },
 
-        _onMouseDown: function ( event ) {
-            if ( event.which !== 1 )
+        _onMouseDown: function(event) {
+            if (event.which !== 1)
                 return;
 
             event.stopPropagation();
@@ -112,16 +112,16 @@
             }
         },
 
-        selectPrev: function ( unselectOthers ) {
-            if ( this._activeElement ) {
+        selectPrev: function(unselectOthers) {
+            if (this._activeElement) {
                 var prev = this.prevItem(this._activeElement);
-                if ( prev ) {
+                if (prev) {
                     if (prev !== this._activeElement) {
-                        Editor.Selection.select( 'asset', prev._userId, unselectOthers, true );
+                        Editor.Selection.select('asset', prev._userId, unselectOthers, true);
                         this.activeItem(prev);
 
-                        window.requestAnimationFrame( function() {
-                            if ( prev.offsetTop <= this.$.content.scrollTop ) {
+                        window.requestAnimationFrame(function() {
+                            if (prev.offsetTop <= this.$.content.scrollTop) {
                                 this.$.content.scrollTop = prev.offsetTop - 2; // 1 for padding, 1 for border
                             }
                         }.bind(this));
@@ -130,18 +130,18 @@
             }
         },
 
-        selectNext: function ( unselectOthers ) {
-            if ( this._activeElement ) {
+        selectNext: function(unselectOthers) {
+            if (this._activeElement) {
                 var next = this.nextItem(this._activeElement, false);
-                if ( next ) {
-                    if ( next !== this._activeElement ) {
-                        Editor.Selection.select( 'asset', next._userId, unselectOthers, true );
+                if (next) {
+                    if (next !== this._activeElement) {
+                        Editor.Selection.select('asset', next._userId, unselectOthers, true);
                         this.activeItem(next);
 
-                        window.requestAnimationFrame( function() {
+                        window.requestAnimationFrame(function() {
                             var headerHeight = next.$.header.offsetHeight;
                             var contentHeight = this.offsetHeight - 3; // 2 for border, 1 for padding
-                            if ( next.offsetTop + headerHeight >= this.$.content.scrollTop + contentHeight ) {
+                            if (next.offsetTop + headerHeight >= this.$.content.scrollTop + contentHeight) {
                                 this.$.content.scrollTop = next.offsetTop + headerHeight - contentHeight;
                             }
                         }.bind(this));
@@ -170,9 +170,9 @@
             return Editor.remote.assetdb.uuidToUrl(element.id);
         },
 
-        moveItemById: function ( id, parentID, name ) {
+        moveItemById: function(id, parentID, name) {
             var srcEL = this._id2el[id];
-            if ( !srcEL ) {
+            if (!srcEL) {
                 Editor.warn('Can not find source element by id: %s', id);
                 return;
             }
@@ -185,12 +185,12 @@
 
             // expand parent
             var parentEL = this._id2el[parentID];
-            if ( parentEL && parentEL.foldable ) {
+            if (parentEL && parentEL.foldable) {
                 parentEL.folded = false;
             }
         },
 
-        _onDragStart: function ( event ) {
+        _onDragStart: function(event) {
             event.stopPropagation();
 
             var selection = Editor.Selection.curSelection('asset');
@@ -204,17 +204,17 @@
             }.bind(this)));
         },
 
-        _onDragEnd: function ( event ) {
+        _onDragEnd: function(event) {
             EditorUI.DragDrop.end();
 
             Editor.Selection.cancel();
             this._curInsertParentEL = null;
         },
 
-        _onDragOver: function ( event ) {
+        _onDragOver: function(event) {
             var dragType = EditorUI.DragDrop.type(event.dataTransfer);
-            if ( dragType !== 'node' && dragType !== 'asset' && dragType !== 'file' ) {
-                EditorUI.DragDrop.allowDrop( event.dataTransfer, false );
+            if (dragType !== 'node' && dragType !== 'asset' && dragType !== 'file') {
+                EditorUI.DragDrop.allowDrop(event.dataTransfer, false);
                 return;
             }
 
@@ -223,15 +223,15 @@
             event.stopPropagation();
 
             var dropEffect = 'none';
-            if ( dragType === 'node' || dragType === 'file' ) {
+            if (dragType === 'node' || dragType === 'file') {
                 dropEffect = 'copy';
-            } else if ( dragType === 'asset' ) {
+            } else if (dragType === 'asset') {
                 dropEffect = 'move';
             }
             EditorUI.DragDrop.updateDropEffect(event.dataTransfer, dropEffect);
         },
 
-        rename: function ( element ) {
+        rename: function(element) {
             var treeBCR = this.getBoundingClientRect();
             var elBCR = element.getBoundingClientRect();
             var offsetTop = elBCR.top - treeBCR.top - 1;
@@ -244,48 +244,48 @@
             this.$.nameInput.value = element.name;
             this.$.nameInput.focus();
             this.$.nameInput._renamingEL = element;
-            window.requestAnimationFrame( function () {
+            window.requestAnimationFrame(function() {
                 this.$.nameInput.select();
             }.bind(this));
         },
 
-        _onRenameMouseDown: function ( event ) {
+        _onRenameMouseDown: function(event) {
             event.stopPropagation();
         },
 
-        _onRenameKeyDown: function ( event ) {
+        _onRenameKeyDown: function(event) {
             event.stopPropagation();
         },
 
-        _onRenameValueChanged: function ( event ) {
+        _onRenameValueChanged: function(event) {
             var targetEL = this.$.nameInput._renamingEL;
-            if ( targetEL ) {
+            if (targetEL) {
                 var srcUrl = this.getUrl(targetEL);
                 var destUrl = Url.join(Url.dirname(srcUrl), this.$.nameInput.value + targetEL.extname);
-                Editor.assetdb.move( srcUrl, destUrl );
+                Editor.assetdb.move(srcUrl, destUrl);
 
                 this.$.nameInput._renamingEL = null;
                 this.$.nameInput.hidden = true;
             }
         },
 
-        _onRenameFocusChanged: function ( event ) {
-            if ( !this.$.nameInput._renamingEL ) {
+        _onRenameFocusChanged: function(event) {
+            if (!this.$.nameInput._renamingEL) {
                 return;
             }
 
-            if ( !event.detail.value ) {
+            if (!event.detail.value) {
                 this.$.nameInput._renamingEL = null;
                 this.$.nameInput.hidden = true;
             }
         },
 
-        _onContextMenu: function ( event ) {
+        _onContextMenu: function(event) {
             event.preventDefault();
             event.stopPropagation();
 
             var contextEL = Polymer.dom(event).localTarget;
-            Editor.Selection.setContext('asset',contextEL._userId);
+            Editor.Selection.setContext('asset', contextEL._userId);
 
             Editor.sendToCore(
                 'assets:popup-context-menu',
@@ -360,7 +360,7 @@
             this._asyncID = id;
         },
 
-        _onScroll: function ( event ) {
+        _onScroll: function(event) {
             this.$.content.scrollLeft = 0;
         },
 
