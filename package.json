@@ -39,6 +39,18 @@
           "f2": "renameCurrentSelected",
           "command+backspace": "deleteCurrentSelected",
           "del": "deleteCurrentSelected"
+        },
+        "#searchResult": {
+          "up": "selectPrev",
+          "down": "selectNext",
+          "shift+up": "shiftSelectPrev",
+          "shift+down": "shiftSelectNext",
+          "left": "foldCurrent",
+          "right": "foldupCurrent",
+          "enter": "renameCurrentSelected",
+          "f2": "renameCurrentSelected",
+          "command+backspace": "deleteCurrentSelected",
+          "del": "deleteCurrentSelected"
         }
       },
       "messages": [

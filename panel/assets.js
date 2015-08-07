@@ -48,7 +48,7 @@ Editor.registerPanel( 'assets.panel', {
             event.preventDefault();
         }
 
-        this.$.tree.selectPrev(true);
+        this.curView().selectPrev(true);
     },
 
     selectNext: function ( event ) {
@@ -57,7 +57,7 @@ Editor.registerPanel( 'assets.panel', {
             event.preventDefault();
         }
 
-        this.$.tree.selectNext(true);
+        this.curView().selectNext(true);
     },
 
     // TODO: make it better
@@ -67,7 +67,7 @@ Editor.registerPanel( 'assets.panel', {
             event.preventDefault();
         }
 
-        this.$.tree.selectPrev(false);
+        this.curView().selectPrev(false);
     },
 
     // TODO: make it better
@@ -77,7 +77,7 @@ Editor.registerPanel( 'assets.panel', {
             event.preventDefault();
         }
 
-        this.$.tree.selectNext(false);
+        this.curView().selectNext(false);
     },
 
     foldCurrent: function ( event ) {
@@ -114,8 +114,8 @@ Editor.registerPanel( 'assets.panel', {
             event.preventDefault();
         }
 
-        if ( this.$.tree._activeElement ) {
-            this.$.tree.rename(this.$.tree._activeElement);
+        if ( this.curView()._activeElement ) {
+            this.curView().rename(this.curView()._activeElement);
         }
     },
 
@@ -127,14 +127,14 @@ Editor.registerPanel( 'assets.panel', {
 
         var ids = Editor.Selection.curSelection('asset');
         var urls = ids.map(function (id) {
-            var el = this.$.tree._id2el[id];
-            return this.$.tree.getUrl(el);
+            var el = this.curView()._id2el[id];
+            return this.curView().getUrl(el);
         }.bind(this));
         Editor.assetdb.delete(urls);
     },
 
     'editor:hint-asset': function ( uuid ) {
-        this.$.tree.hintItemById(uuid);
+        this.curView().hintItemById(uuid);
     },
 
     'selection:selected': function ( type, ids ) {
@@ -142,7 +142,7 @@ Editor.registerPanel( 'assets.panel', {
             return;
 
         ids.forEach( function ( id ) {
-            this.$.tree.selectItemById(id);
+            this.curView().selectItemById(id);
         }.bind(this));
     },
 
@@ -152,6 +152,7 @@ Editor.registerPanel( 'assets.panel', {
 
         ids.forEach( function ( id ) {
             this.$.tree.unselectItemById(id);
+            this.$.searchResult.unselectItemById(id);
         }.bind(this));
     },
 
@@ -162,15 +163,15 @@ Editor.registerPanel( 'assets.panel', {
         if ( !id )
             return;
 
-        this.$.tree.activeItemById(id);
-        this.activeItemUrl = this.$.tree.getUrl(this.$.tree._activeElement);
+        this.curView().activeItemById(id);
+        this.activeItemUrl = this.curView().getUrl(this.curView()._activeElement);
     },
 
     'selection:deactivated': function ( type, id ) {
         if ( type !== 'asset' )
             return;
 
-        this.$.tree.deactiveItemById(id);
+        this.curView().deactiveItemById(id);
     },
 
     'asset-db:assets-created': function ( results ) {
@@ -217,15 +218,18 @@ Editor.registerPanel( 'assets.panel', {
         var self = this;
 
         filterResults.forEach(function ( result ) {
-            self.$.tree.moveItemById( result.uuid,
-                                      result.parentUuid,
-                                      Path.basenameNoExt(result.destPath) );
+            var views = [ 'tree', 'searchResult' ];
+            views.forEach( function (name) {
+                self.$[name].moveItemById( result.uuid,
+                                          result.parentUuid,
+                                          Path.basenameNoExt(result.destPath) );
+            });
         });
 
         // flash moved
         filterResults.forEach(function ( result ) {
             requestAnimationFrame( function () {
-                var itemEL = self.$.tree._id2el[result.uuid];
+                var itemEL = self.curView()._id2el[result.uuid];
                 itemEL.hint();
             });
         });
@@ -242,8 +246,9 @@ Editor.registerPanel( 'assets.panel', {
             return 0;
         });
 
-        filterResults.forEach( function ( result ) {
+        results.forEach( function ( result ) {
             this.$.tree.removeItemById( result.uuid );
+            this.$.searchResult.removeItemById( result.uuid );
         }.bind(this) );
 
         var uuids = results.map( function ( result ) {
@@ -253,13 +258,13 @@ Editor.registerPanel( 'assets.panel', {
     },
 
     'asset-db:asset-changed': function ( result ) {
-        var itemEL = this.$.tree._id2el[result.uuid];
+        var itemEL = this.curView()._id2el[result.uuid];
         itemEL.hint();
     },
 
     'asset-db:asset-uuid-changed': function ( result ) {
-        var itemEL = this.$.tree._id2el[result.oldUuid];
-        this.$.tree.updateItemID(itemEL, result.uuid);
+        var itemEL = this.curView()._id2el[result.oldUuid];
+        this.curView().updateItemID(itemEL, result.uuid);
         itemEL.hint();
     },
 
@@ -270,34 +275,34 @@ Editor.registerPanel( 'assets.panel', {
             var contextUuids = Editor.Selection.contexts('asset');
             if ( contextUuids.length > 0 ) {
                 var contextUuid = contextUuids[0];
-                el = this.$.tree._id2el[contextUuid];
+                el = this.curView()._id2el[contextUuid];
                 if ( el.assetType === 'folder' || el.assetType === 'mount' ) {
-                    parentUrl = this.$.tree.getUrl(el);
+                    parentUrl = this.curView().getUrl(el);
                 }
                 else {
-                    url = this.$.tree.getUrl(el);
+                    url = this.curView().getUrl(el);
                     parentUrl = Path.dirname(url);
                 }
             } else {
-                el = Polymer.dom(this.$.tree).firstElementChild;
-                parentUrl = this.$.tree.getUrl(el);
+                el = Polymer.dom(this.curView()).firstElementChild;
+                parentUrl = this.curView().getUrl(el);
             }
         } else {
             var uuid = Editor.Selection.curActivate('asset');
             if ( uuid ) {
-                el = this.$.tree._id2el[uuid];
-                url = this.$.tree.getUrl(el);
+                el = this.curView()._id2el[uuid];
+                url = this.curView().getUrl(el);
 
                 // if this is not root
-                if ( Polymer.dom(el).parentNode !== this.$.tree ) {
+                if ( Polymer.dom(el).parentNode !== this.curView() ) {
                     parentUrl = Path.dirname(url);
                 }
                 else {
                     parentUrl = url;
                 }
             } else {
-                el = Polymer.dom(this.$.tree).firstElementChild;
-                parentUrl = this.$.tree.getUrl(el);
+                el = Polymer.dom(this.curView()).firstElementChild;
+                parentUrl = this.curView().getUrl(el);
             }
         }
 
@@ -310,16 +315,16 @@ Editor.registerPanel( 'assets.panel', {
     },
 
     'assets:rename': function ( uuid ) {
-        var el = this.$.tree._id2el[uuid];
+        var el = this.curView()._id2el[uuid];
         if ( el ) {
-            this.$.tree.rename(el);
+            this.curView().rename(el);
         }
     },
 
     'assets:delete': function ( uuids ) {
         var urls = uuids.map(function (id) {
-            var el = this.$.tree._id2el[id];
-            return this.$.tree.getUrl(el);
+            var el = this.curView()._id2el[id];
+            return this.curView().getUrl(el);
         }.bind(this));
         Editor.assetdb.delete(urls);
     },
@@ -364,6 +369,13 @@ Editor.registerPanel( 'assets.panel', {
         this.$.searchResult.hidden = true;
         this.$.searchResult.clear();
         this.$.tree.hidden = false;
+    },
+
+    curView: function () {
+        if (!this.$.searchResult.hidden) {
+            return this.$.searchResult;
+        }
+        return this.$.tree;
     },
 
     _onSearchConfirm: function ( event ) {
