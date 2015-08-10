@@ -151,22 +151,6 @@
         },
 
         getUrl: function(element) {
-            // if (element.assetType === 'mount') {
-            //     return element.name + '://';
-            // }
-            //
-            // var url = element.name + element.extname;
-            // var parentEL = Polymer.dom(element).parentNode;
-            // while (parentEL instanceof Editor.widgets['assets-item']) {
-            //     if (parentEL.assetType === 'mount') {
-            //         url = parentEL.name + '://' + url;
-            //         break;
-            //     } else {
-            //         url = Url.join(parentEL.name + parentEL.extname, url);
-            //         parentEL = Polymer.dom(parentEL).parentNode;
-            //     }
-            // }
-            // return url;
             return Editor.remote.assetdb.uuidToUrl(element.id);
         },
 

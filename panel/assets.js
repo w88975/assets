@@ -178,13 +178,26 @@ Editor.registerPanel( 'assets.panel', {
         var self = this;
 
         results.forEach(function ( result ) {
+            var baseName = Path.basenameNoExt(result.path);
             self.$.tree.addNewItemById(
                 result.uuid,
                 result.parentUuid,
-                Path.basenameNoExt(result.path),
+                baseName,
                 Path.extname(result.path),
                 result.type
             );
+
+            if (baseName.toLowerCase().indexOf(self.filterText.toLowerCase()) > -1) {
+                var ctor = Editor.widgets['assets-item'];
+                var newEL = new ctor();
+                self.$.searchResult.addItem( self.curView(), newEL, {
+                    id: result.uuid,
+                    name: Path.basenameNoExt(result.path),
+                });
+                newEL.assetType = result.type;
+                newEL.extname = Path.extname(result.path);
+                newEL.setIcon( result.type );
+            }
         });
 
         // flash added
@@ -195,11 +208,12 @@ Editor.registerPanel( 'assets.panel', {
 
             if ( !foundParentInResults ) {
                 requestAnimationFrame( function () {
-                    var itemEL = self.$.tree._id2el[result.uuid];
-                    itemEL.hint();
-
-                    var parentEL = self.$.tree._id2el[result.parentUuid];
-                    parentEL.folded = false;
+                    var itemEL = self.curView()._id2el[result.uuid];
+                    if (itemEL) {
+                        itemEL.hint();
+                        var parentEL = self.curView()._id2el[result.parentUuid];
+                        parentEL.folded = false;
+                    }
                 });
             }
         });
