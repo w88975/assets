@@ -298,6 +298,10 @@
             this.$.loader.hidden = true;
         },
 
+        isSearchResult: function (name, filterText) {
+            return name.toLowerCase().indexOf(filterText.toLowerCase()) > -1 ;
+        },
+
         filter: function(filterText) {
             if (!filterText) {
                 return;
@@ -318,7 +322,7 @@
 
                         var name = Path.basenameNoExt(info.path);
                         var extname = Path.extname(info.path);
-                        if (name.toLowerCase().indexOf(text) > -1) {
+                        if (this.isSearchResult(name, text)) {
                             var ctor = Editor.widgets['assets-item'];
                             var newEL = new ctor();
 

@@ -178,21 +178,21 @@ Editor.registerPanel( 'assets.panel', {
         var self = this;
 
         results.forEach(function ( result ) {
-            var baseName = Path.basenameNoExt(result.path);
+            var baseNameNoExt = Path.basenameNoExt(result.path);
             self.$.tree.addNewItemById(
                 result.uuid,
                 result.parentUuid,
-                baseName,
+                baseNameNoExt,
                 Path.extname(result.path),
                 result.type
             );
 
-            if (baseName.toLowerCase().indexOf(self.filterText.toLowerCase()) > -1) {
+            if ( self.$.searchResult.isSearchResult( baseNameNoExt, self.filterText) ) {
                 var ctor = Editor.widgets['assets-item'];
                 var newEL = new ctor();
                 self.$.searchResult.addItem( self.curView(), newEL, {
                     id: result.uuid,
-                    name: Path.basenameNoExt(result.path),
+                    name: baseNameNoExt,
                 });
                 newEL.assetType = result.type;
                 newEL.extname = Path.extname(result.path);
