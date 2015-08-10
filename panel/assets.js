@@ -176,6 +176,7 @@ Editor.registerPanel( 'assets.panel', {
 
     'asset-db:assets-created': function ( results ) {
         var self = this;
+        var hintResults = [];
 
         results.forEach(function ( result ) {
             var baseNameNoExt = Path.basenameNoExt(result.path);
@@ -187,35 +188,40 @@ Editor.registerPanel( 'assets.panel', {
                 result.type
             );
 
-            if ( self.$.searchResult.validate( baseNameNoExt, self.filterText) ) {
-                var ctor = Editor.widgets['assets-item'];
-                var newEL = new ctor();
-                self.$.searchResult.addItem( self.curView(), newEL, {
-                    id: result.uuid,
-                    name: baseNameNoExt,
+            if ( !self.$.searchResult.hidden ) {
+                if ( self.$.searchResult.validate( baseNameNoExt, self.filterText) ) {
+                    var ctor = Editor.widgets['assets-item'];
+                    var newEL = new ctor();
+                    self.$.searchResult.addItem( self.curView(), newEL, {
+                        id: result.uuid,
+                        name: baseNameNoExt,
+                    });
+                    newEL.assetType = result.type;
+                    newEL.extname = Path.extname(result.path);
+                    newEL.setIcon( result.type );
+                    hintResults.push(result);
+                }
+            }
+            else {
+                var foundParentInResults = results.some(function (result2) {
+                    return result2.uuid === result.parentUuid;
                 });
-                newEL.assetType = result.type;
-                newEL.extname = Path.extname(result.path);
-                newEL.setIcon( result.type );
+                if ( !foundParentInResults ) {
+                    hintResults.push(result);
+                }
             }
         });
 
-        // flash added
-        results.forEach(function ( result ) {
-            var foundParentInResults = results.some(function (result2) {
-                return result2.uuid === result.parentUuid;
+        var curView = self.curView();
+        hintResults.forEach(function ( result ) {
+            requestAnimationFrame( function () {
+                var itemEL = curView._id2el[result.uuid];
+                itemEL.hint();
+                var parentEL = curView._id2el[result.parentUuid];
+                if (parentEL) {
+                    parentEL.folded = false;
+                }
             });
-
-            if ( !foundParentInResults ) {
-                requestAnimationFrame( function () {
-                    var itemEL = self.curView()._id2el[result.uuid];
-                    if (itemEL) {
-                        itemEL.hint();
-                        var parentEL = self.curView()._id2el[result.parentUuid];
-                        parentEL.folded = false;
-                    }
-                });
-            }
         });
     },
 
