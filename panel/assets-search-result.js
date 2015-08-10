@@ -298,7 +298,7 @@
             this.$.loader.hidden = true;
         },
 
-        isSearchResult: function (name, filterText) {
+        validate: function (name, filterText) {
             return name.toLowerCase().indexOf(filterText.toLowerCase()) > -1 ;
         },
 
@@ -322,7 +322,7 @@
 
                         var name = Path.basenameNoExt(info.path);
                         var extname = Path.extname(info.path);
-                        if (this.isSearchResult(name, text)) {
+                        if (this.validate(name, text)) {
                             var ctor = Editor.widgets['assets-item'];
                             var newEL = new ctor();
 
