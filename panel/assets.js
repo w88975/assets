@@ -383,13 +383,38 @@ Editor.registerPanel( 'assets.panel', {
 
         if (this.filterText) {
             this.$.searchResult.hidden = false;
+            this.$.viewOrigin.hidden = false;
             this.$.tree.hidden = true;
             return;
         }
 
         this.$.searchResult.hidden = true;
+        this.$.viewOrigin.hidden = true;
         this.$.searchResult.clear();
         this.$.tree.hidden = false;
+    },
+
+    _onViewOriginClick: function (event) {
+        event.stopPropagation();
+
+        var ids = Editor.Selection.curSelection('asset');
+        var continue_ = false;
+        ids.forEach( function (item) {
+            if (this.$.searchResult._id2el[item]) {
+                continue_ = true;
+                return;
+            }
+            continue_ = false;
+        }.bind(this));
+
+        if (!continue_) {
+            return;
+        }
+        this.filterText = '';
+        this.$.tree.hintItemById(ids[0]);
+        for (var i = 1; i < ids.length; ++i) {
+            this.$.tree._id2el[ids[i]].hint();
+        }
     },
 
     curView: function () {
