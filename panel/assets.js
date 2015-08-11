@@ -142,7 +142,8 @@ Editor.registerPanel( 'assets.panel', {
             return;
 
         ids.forEach( function ( id ) {
-            this.curView().selectItemById(id);
+            this.$.tree.selectItemById(id);
+            this.$.searchResult.selectItemById(id);
         }.bind(this));
     },
 
