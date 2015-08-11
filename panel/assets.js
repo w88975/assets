@@ -383,13 +383,13 @@ Editor.registerPanel( 'assets.panel', {
 
         if (this.filterText) {
             this.$.searchResult.hidden = false;
-            this.$.viewOrigin.hidden = false;
+            this.$.position.hidden = false;
             this.$.tree.hidden = true;
             return;
         }
 
         this.$.searchResult.hidden = true;
-        this.$.viewOrigin.hidden = true;
+        this.$.position.hidden = true;
         this.$.searchResult.clear();
         this.$.tree.hidden = false;
     },
@@ -398,16 +398,16 @@ Editor.registerPanel( 'assets.panel', {
         event.stopPropagation();
 
         var ids = Editor.Selection.curSelection('asset');
-        var continue_ = false;
+        var positionItem = false;
         ids.forEach( function (item) {
             if (this.$.searchResult._id2el[item]) {
-                continue_ = true;
+                positionItem = true;
                 return;
             }
-            continue_ = false;
+            positionItem = false;
         }.bind(this));
 
-        if (!continue_) {
+        if (!positionItem) {
             return;
         }
         this.filterText = '';
