@@ -142,13 +142,10 @@ Editor.registerPanel( 'assets.panel', {
             return;
 
         ids.forEach( function ( id ) {
-            var views = [ 'tree' ];
+            this.$.tree.selectItemById(id);
             if (!this.$.searchResult.hidden) {
-                views.push('searchResult');
+                this.$.searchResult.selectItemById(id);
             }
-            views.forEach( function (name) {
-                this.$[name].selectItemById(id);
-            }.bind(this));
         }.bind(this));
     },
 
@@ -157,13 +154,10 @@ Editor.registerPanel( 'assets.panel', {
             return;
 
         ids.forEach( function ( id ) {
-            var views = [ 'tree' ];
+            this.$.tree.unselectItemById(id);
             if (!this.$.searchResult.hidden) {
-                views.push('searchResult');
+                this.$.searchResult.unselectItemById(id);
             }
-            views.forEach( function (name) {
-                this.$[name].unselectItemById(id);
-            }.bind(this));
         }.bind(this));
     },
 
@@ -249,15 +243,15 @@ Editor.registerPanel( 'assets.panel', {
         var self = this;
 
         filterResults.forEach(function ( result ) {
-            var views = [ 'tree' ];
+            self.$.tree.moveItemById( result.uuid,
+                                      result.parentUuid,
+                                      Path.basenameNoExt(result.destPath) );
+
             if (!self.$.searchResult.hidden) {
-                views.push('searchResult');
-            }
-            views.forEach( function (name) {
-                self.$[name].moveItemById( result.uuid,
+                self.$.searchResult.moveItemById( result.uuid,
                                           result.parentUuid,
                                           Path.basenameNoExt(result.destPath) );
-            });
+            }
         });
 
         // flash moved
@@ -281,13 +275,10 @@ Editor.registerPanel( 'assets.panel', {
         });
 
         results.forEach( function ( result ) {
-            var views = [ 'tree' ];
+            this.$.tree.removeItemById( result.uuid );
             if (!this.$.searchResult.hidden) {
-                views.push('searchResult');
+                this.$.searchResult.removeItemById( result.uuid );
             }
-            views.forEach( function (name) {
-                this.$[name].removeItemById( result.uuid );
-            }.bind(this));
         }.bind(this) );
 
         var uuids = results.map( function ( result ) {
@@ -401,31 +392,31 @@ Editor.registerPanel( 'assets.panel', {
 
         if (this.filterText) {
             this.$.searchResult.hidden = false;
-            this.$.position.hidden = false;
+            this.$.locate.hidden = false;
             this.$.tree.hidden = true;
             return;
         }
 
         this.$.searchResult.hidden = true;
-        this.$.position.hidden = true;
+        this.$.locate.hidden = true;
         this.$.searchResult.clear();
         this.$.tree.hidden = false;
     },
 
-    _onViewOriginClick: function (event) {
+    _onLocateClick: function (event) {
         event.stopPropagation();
 
         var ids = Editor.Selection.curSelection('asset');
-        var positionItem = false;
+        var locateItem = false;
         ids.forEach( function (item) {
             if (this.$.searchResult._id2el[item]) {
-                positionItem = true;
+                locateItem = true;
                 return;
             }
-            positionItem = false;
+            locateItem = false;
         }.bind(this));
 
-        if (!positionItem) {
+        if (!locateItem) {
             return;
         }
         this.filterText = '';
