@@ -142,8 +142,13 @@ Editor.registerPanel( 'assets.panel', {
             return;
 
         ids.forEach( function ( id ) {
-            this.$.tree.selectItemById(id);
-            this.$.searchResult.selectItemById(id);
+            var views = [ 'tree' ];
+            if (!this.$.searchResult.hidden) {
+                views.push('searchResult');
+            }
+            views.forEach( function (name) {
+                this.$[name].selectItemById(id);
+            }.bind(this));
         }.bind(this));
     },
 
@@ -152,8 +157,13 @@ Editor.registerPanel( 'assets.panel', {
             return;
 
         ids.forEach( function ( id ) {
-            this.$.tree.unselectItemById(id);
-            this.$.searchResult.unselectItemById(id);
+            var views = [ 'tree' ];
+            if (!this.$.searchResult.hidden) {
+                views.push('searchResult');
+            }
+            views.forEach( function (name) {
+                this.$[name].unselectItemById(id);
+            }.bind(this));
         }.bind(this));
     },
 
@@ -239,7 +249,10 @@ Editor.registerPanel( 'assets.panel', {
         var self = this;
 
         filterResults.forEach(function ( result ) {
-            var views = [ 'tree', 'searchResult' ];
+            var views = [ 'tree' ];
+            if (!self.$.searchResult.hidden) {
+                views.push('searchResult');
+            }
             views.forEach( function (name) {
                 self.$[name].moveItemById( result.uuid,
                                           result.parentUuid,
@@ -268,8 +281,13 @@ Editor.registerPanel( 'assets.panel', {
         });
 
         results.forEach( function ( result ) {
-            this.$.tree.removeItemById( result.uuid );
-            this.$.searchResult.removeItemById( result.uuid );
+            var views = [ 'tree' ];
+            if (!this.$.searchResult.hidden) {
+                views.push('searchResult');
+            }
+            views.forEach( function (name) {
+                this.$[name].removeItemById( result.uuid );
+            }.bind(this));
         }.bind(this) );
 
         var uuids = results.map( function ( result ) {
